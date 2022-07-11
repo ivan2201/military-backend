@@ -827,7 +827,7 @@ false Zulu
 13423||-9223372036854775808|U|G
 13423||10|U|G</Grants>
       <Owner>nikitascorp</Owner>
-      <IntrospectionStateNumber>291154</IntrospectionStateNumber>
+      <IntrospectionStateNumber>291156</IntrospectionStateNumber>
       <Current>1</Current>
       <Relations>sequence|table|61710|61704|1
 sequence|table|61718|61712|1
@@ -918,7 +918,7 @@ sequence|table|61766|61760|1
       <Comment>standard public schema</Comment>
       <StateNumber>286</StateNumber>
       <Owner>nikitascorp</Owner>
-      <IntrospectionStateNumber>291155</IntrospectionStateNumber>
+      <IntrospectionStateNumber>291157</IntrospectionStateNumber>
       <Current>1</Current>
     </schema>
     <extension id="24" parent="5" name="plpgsql">
