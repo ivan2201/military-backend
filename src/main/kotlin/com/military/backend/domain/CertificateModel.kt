@@ -28,4 +28,30 @@ data class CertificateModel(
     @Column(name = "cert_creator")
     val certCreator: String? = null,
 
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CertificateModel
+
+        if (id != other.id) return false
+        if (category != other.category) return false
+        if (certNumber != other.certNumber) return false
+        if (approveDate != other.approveDate) return false
+        if (recertDate != other.recertDate) return false
+        if (certCreator != other.certCreator) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id ?: 0
+        result = 31 * result + (category?.hashCode() ?: 0)
+        result = 31 * result + (certNumber ?: 0)
+        result = 31 * result + (approveDate?.hashCode() ?: 0)
+        result = 31 * result + (recertDate?.hashCode() ?: 0)
+        result = 31 * result + (certCreator?.hashCode() ?: 0)
+        return result
+    }
+}
