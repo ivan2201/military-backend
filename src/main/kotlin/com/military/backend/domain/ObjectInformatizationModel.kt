@@ -1,9 +1,12 @@
 package com.military.backend.domain
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.military.backend.serializer.CustomObjectInformatizationSerializer
 import javax.persistence.*
 
 @Entity
 @Table(name = "object_informatization")
+@JsonSerialize(using = CustomObjectInformatizationSerializer::class)
 data class ObjectInformatizationModel(
 
     @Id
@@ -35,5 +38,17 @@ data class ObjectInformatizationModel(
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "objectInformatization")
     val components: Set<ComponentModel>? = null
-
 )
+{
+    override fun hashCode(): Int {
+        return militaryBase?.baseNumber.hashCode() + name.hashCode()
+    }
+    override fun equals(other: Any?): Boolean {
+        if (other is ObjectInformatizationModel) {
+            if (( id == null || id == -1 || other.id == null || other.id == -1 || other.id == id)
+                && other.name == name && other.militaryBase == militaryBase)
+                return true
+        }
+        return false
+    }
+}
