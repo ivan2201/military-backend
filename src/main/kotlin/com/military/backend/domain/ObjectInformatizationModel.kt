@@ -2,6 +2,10 @@ package com.military.backend.domain
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.military.backend.serializer.CustomObjectInformatizationSerializer
+import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.Hibernate
+import org.hibernate.annotations.CreationTimestamp
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -39,36 +43,26 @@ data class ObjectInformatizationModel(
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "oi_id")
-    val components: Set<ComponentModel>? = null
+    val components: Set<ComponentModel>? = null,
+
+    @JsonIgnore
+    @CreationTimestamp
+    @Column(name = "created")
+    val created: LocalDateTime? = null
 
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
         other as ObjectInformatizationModel
 
-        if (id != other.id) return false
-        if (cert != other.cert) return false
-        if (specialInvestigation != other.specialInvestigation) return false
-        if (specialCheckResult != other.specialCheckResult) return false
-        if (militaryBase != other.militaryBase) return false
-        if (name != other.name) return false
-
-        return true
+        return id != null && id == other.id
     }
 
-    override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + (cert?.hashCode() ?: 0)
-        result = 31 * result + (specialInvestigation?.hashCode() ?: 0)
-        result = 31 * result + (specialCheckResult?.hashCode() ?: 0)
-        result = 31 * result + (militaryBase?.hashCode() ?: 0)
-        result = 31 * result + (name?.hashCode() ?: 0)
-        return result
-    }
+    override fun hashCode(): Int = javaClass.hashCode()
 
+    @Override
     override fun toString(): String {
-        return "ObjectInformatizationModel(id=$id, cert=$cert, specialInvestigation=$specialInvestigation, specialCheckResult=$specialCheckResult, militaryBase=$militaryBase, name=$name)"
+        return this::class.simpleName + "(id = $id , name = $name , created = $created )"
     }
 }

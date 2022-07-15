@@ -2,10 +2,14 @@ package com.military.backend.domain
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.military.backend.serializer.CustomComponentSerializer
+import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.Hibernate
+import org.hibernate.annotations.CreationTimestamp
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "components")
+@Table(name = "component")
 @JsonSerialize(using = CustomComponentSerializer::class)
 data class ComponentModel(
 
@@ -24,26 +28,24 @@ data class ComponentModel(
     @Column(name = "series_number")
     val seriesNumber: String? = null,
 
+    @JsonIgnore
+    @CreationTimestamp
+    @Column(name = "created")
+    val created: LocalDateTime? = null
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
         other as ComponentModel
 
-        if (id != other.id) return false
-        if (objectInformatization != other.objectInformatization) return false
-        if (name != other.name) return false
-        if (seriesNumber != other.seriesNumber) return false
-
-        return true
+        return id != null && id == other.id
     }
 
-    override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + (objectInformatization?.hashCode() ?: 0)
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (seriesNumber?.hashCode() ?: 0)
-        return result
+    override fun hashCode(): Int = javaClass.hashCode()
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , name = $name , seriesNumber = $seriesNumber , created = $created )"
     }
 }

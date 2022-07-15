@@ -1,5 +1,9 @@
 package com.military.backend.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.Hibernate
+import org.hibernate.annotations.CreationTimestamp
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -15,35 +19,29 @@ data class MilitaryBaseModel(
     val name: String? = null,
 
     @Column(name = "base_number")
-    val baseNumber: Int? = null,
+    val baseNumber: String? = null,
 
     @Column(name = "location")
     val location: String? = null,
 
+    @JsonIgnore
+    @CreationTimestamp
+    @Column(name = "created")
+    val created: LocalDateTime? = null
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
         other as MilitaryBaseModel
 
-        if (id != other.id) return false
-        if (name != other.name) return false
-        if (baseNumber != other.baseNumber) return false
-        if (location != other.location) return false
-
-        return true
+        return id != null && id == other.id
     }
 
-    override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (baseNumber ?: 0)
-        result = 31 * result + (location?.hashCode() ?: 0)
-        return result
-    }
+    override fun hashCode(): Int = javaClass.hashCode()
 
+    @Override
     override fun toString(): String {
-        return "MilitaryBaseModel(id=$id, name=$name, baseNumber=$baseNumber, location=$location)"
+        return this::class.simpleName + "(id = $id , name = $name , baseNumber = $baseNumber , location = $location , created = $created )"
     }
 }
