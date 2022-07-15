@@ -21,8 +21,6 @@ class ExcelHandler {
     @Autowired
     private val objectInformatizationRepository: ObjectInformatizationRepository? = null
 
-    private var fileIndex = 1
-
     // headers
     private final val militaryBaseHeader = "Подразделение или в/ч"
     private final val informObjectHeader = "Объект информатизации"
@@ -52,9 +50,12 @@ class ExcelHandler {
         innerDocsHeader to arrayOf(30 * 256, 20 * 256, 15 * 256),
     )
 
+    /**
+     * Creates excel [File] with info about all informatization objects from all military bases.
+     */
     fun generateFullExcel(): File {
         val mappedObjects = objectInformatizationRepository!!.findAll()
-            .sortedWith(compareBy({it.militaryBase?.name}, {it.name}))
+            .sortedWith(compareBy({ it.militaryBase?.name }, { it.name }))
             .groupBy { it.militaryBase }
         val headers = listOf(
             militaryBaseHeader,
@@ -70,6 +71,9 @@ class ExcelHandler {
         return writeExcel(wb, "Все объекты информатизации")
     }
 
+    /**
+     * Creates excel [File] with info about all informatization objects for specified [militaryBase].
+     */
     fun generateMilitaryBaseExcel(militaryBase: MilitaryBaseModel): File {
         val mappedObjects = mapOf(
             militaryBase as MilitaryBaseModel? to
@@ -88,6 +92,9 @@ class ExcelHandler {
         return writeExcel(wb, "Объекты информатизации военной части ${militaryBase.baseNumber}")
     }
 
+    /**
+     * Creates excel [File] with info about specified [informatizationObject].
+     */
     fun generateObjInfromExcel(informatizationObject: ObjectInformatizationModel): File {
         val mappedObjects = mapOf(informatizationObject.militaryBase to listOf(informatizationObject))
         val headers = listOf(
@@ -114,25 +121,33 @@ class ExcelHandler {
 
         val styles = createStyles(wb)
 
-        val sheet = wb.createSheet()
+        val sheet = wb.createSheet(
+            when {
+                headers.contains(militaryBaseHeader) ->
+                    "Все военные части"
+                headers.contains(militaryBaseHeader) ->
+                    "Военная часть №${mappedObjects.toList().first().first?.baseNumber ?: "00000"}"
+                else ->
+                    "Объект информатизации \"${mappedObjects.toList().first().second.first().name}\""
+            }
+        )
 
         // sheet settings
         sheet.horizontallyCenter = true
         sheet.printSetup.landscape = true
 
-        val totalSubheaders = headers.sumOf { max(1, subheaderMap[it]!!.size) }
-
-        val leftBorders = mutableListOf<Int>()
-        val rightBorders = mutableListOf<Int>()
-
-        val firstHeaderRow = sheet.createRow(0)
-        val secondHeaderRow = sheet.createRow(1)
-        firstHeaderRow.heightInPoints = 60f
-        secondHeaderRow.heightInPoints = 40f
         var i = 0
         var cell: XSSFCell
         var row: XSSFRow
         var style: CellStyle
+
+        val totalSubheaders = headers.sumOf { max(1, subheaderMap[it]!!.size) }
+        val leftBorders = mutableListOf<Int>()
+        val rightBorders = mutableListOf<Int>()
+        val firstHeaderRow = sheet.createRow(0)
+        val secondHeaderRow = sheet.createRow(1)
+        firstHeaderRow.heightInPoints = 60f
+        secondHeaderRow.heightInPoints = 40f
         for (header in headers) {
 
             val subheaders = subheaderMap[header]!!
@@ -332,6 +347,7 @@ class ExcelHandler {
             }
         }
 
+        // bordering table
         row = sheet.getRow(i - 1)
 
         for (k in 0 until totalSubheaders) {
@@ -413,111 +429,44 @@ class ExcelHandler {
         return styles
     }
 
+    private fun withBorder(wb: Workbook, style: CellStyle, borderSides: BorderSides = BorderSides()): CellStyle {
+        val borderedStyle = wb.createCellStyle().apply {
+            cloneStyleFrom(style)
+        }
+
+        getBorderParams(borderSides.top).also {
+            borderedStyle.borderTop = it.first ?: borderedStyle.borderTop
+            borderedStyle.topBorderColor = it.second
+        }
+
+        getBorderParams(borderSides.bottom).also {
+            borderedStyle.borderBottom = it.first ?: borderedStyle.borderTop
+            borderedStyle.bottomBorderColor = it.second
+        }
+
+        getBorderParams(borderSides.left).also {
+            borderedStyle.borderLeft = it.first ?: borderedStyle.borderTop
+            borderedStyle.leftBorderColor = it.second
+        }
+        getBorderParams(borderSides.right).also {
+            borderedStyle.borderRight = it.first ?: borderedStyle.borderTop
+            borderedStyle.rightBorderColor = it.second
+        }
+
+        return borderedStyle
+    }
+
+    private fun getBorderParams(borderType: Int): Pair<BorderStyle?, Short> = when (borderType) {
+        1 -> BorderStyle.THIN to IndexedColors.GREY_50_PERCENT.index
+        2 -> BorderStyle.THIN to IndexedColors.GREY_80_PERCENT.index
+        3 -> BorderStyle.THICK to IndexedColors.GREY_80_PERCENT.index
+        else -> null to IndexedColors.BLACK.index
+    }
+
     private data class BorderSides(
         var top: Int = 0,
         var bottom: Int = 0,
         var left: Int = 0,
         var right: Int = 0
     )
-
-    private fun withBorder(wb: Workbook, style: CellStyle, borderSides: BorderSides = BorderSides()): CellStyle {
-        val borderedStyle = wb.createCellStyle().apply {
-            cloneStyleFrom(style)
-        }
-
-        val topBorderStyle: BorderStyle
-        val topBorderColor: Short
-        when (borderSides.top) {
-            1 -> {
-                topBorderStyle = BorderStyle.THIN
-                topBorderColor = IndexedColors.GREY_50_PERCENT.index
-            }
-            2 -> {
-                topBorderStyle = BorderStyle.THIN
-                topBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            3 -> {
-                topBorderStyle = BorderStyle.THICK
-                topBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            else -> {
-                topBorderStyle = borderedStyle.borderTop
-                topBorderColor = IndexedColors.BLACK.index
-            }
-        }
-
-        val bottomBorderStyle: BorderStyle
-        val bottomBorderColor: Short
-        when (borderSides.bottom) {
-            1 -> {
-                bottomBorderStyle = BorderStyle.THIN
-                bottomBorderColor = IndexedColors.GREY_50_PERCENT.index
-            }
-            2 -> {
-                bottomBorderStyle = BorderStyle.THIN
-                bottomBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            3 -> {
-                bottomBorderStyle = BorderStyle.THICK
-                bottomBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            else -> {
-                bottomBorderStyle = borderedStyle.borderBottom
-                bottomBorderColor = IndexedColors.BLACK.index
-            }
-        }
-
-        val leftBorderStyle: BorderStyle
-        val leftBorderColor: Short
-        when (borderSides.left) {
-            1 -> {
-                leftBorderStyle = BorderStyle.THIN
-                leftBorderColor = IndexedColors.GREY_50_PERCENT.index
-            }
-            2 -> {
-                leftBorderStyle = BorderStyle.THIN
-                leftBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            3 -> {
-                leftBorderStyle = BorderStyle.THICK
-                leftBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            else -> {
-                leftBorderStyle = borderedStyle.borderLeft
-                leftBorderColor = IndexedColors.BLACK.index
-            }
-        }
-
-        val rightBorderStyle: BorderStyle
-        val rightBorderColor: Short
-        when (borderSides.right) {
-            1 -> {
-                rightBorderStyle = BorderStyle.THIN
-                rightBorderColor = IndexedColors.GREY_50_PERCENT.index
-            }
-            2 -> {
-                rightBorderStyle = BorderStyle.THIN
-                rightBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            3 -> {
-                rightBorderStyle = BorderStyle.THICK
-                rightBorderColor = IndexedColors.GREY_80_PERCENT.index
-            }
-            else -> {
-                rightBorderStyle = borderedStyle.borderRight
-                rightBorderColor = IndexedColors.BLACK.index
-            }
-        }
-
-        borderedStyle.borderTop = topBorderStyle
-        borderedStyle.topBorderColor = topBorderColor
-        borderedStyle.borderBottom = bottomBorderStyle
-        borderedStyle.bottomBorderColor = bottomBorderColor
-        borderedStyle.borderLeft = leftBorderStyle
-        borderedStyle.leftBorderColor = leftBorderColor
-        borderedStyle.borderRight = rightBorderStyle
-        borderedStyle.rightBorderColor = rightBorderColor
-
-        return borderedStyle
-    }
 }
