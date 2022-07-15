@@ -12,7 +12,7 @@ class CategoryServiceImpl: CategoryService {
         return categoryRepository.getOne(id)
     }
 
-    override fun getAll(): List<CategoryModel> {
-        return categoryRepository.findAll()
+    override fun getAll(): Set<CategoryModel> {
+        return categoryRepository.findAll().toSet()
     }
 }

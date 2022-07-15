@@ -37,7 +37,7 @@ class SpecialInvestigationServiceImpl: SpecialInvestigationService {
         specialInvestigationRepository.delete(specInvestigation)
     }
 
-    override fun getAll(): List<SpecialInvestigationModel> {
-        return specialInvestigationRepository.findAll()
+    override fun getAll(): Set<SpecialInvestigationModel> {
+        return specialInvestigationRepository.findAll().toSet()
     }
 }

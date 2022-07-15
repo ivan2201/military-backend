@@ -13,7 +13,7 @@ class MilitaryBaseAPIController {
     lateinit var militaryBaseService: MilitaryBaseService
 
     @GetMapping("api/military-bases/")
-    fun getMilitaryBases(): List<MilitaryBaseModel> {
+    fun getMilitaryBases(): Set<MilitaryBaseModel> {
         return militaryBaseService.getAll()
     }
 }

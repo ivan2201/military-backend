@@ -37,7 +37,7 @@ class CertificateServiceImpl: CertificateService {
         certificateRepository.delete(certificate)
     }
 
-    override fun getAll(): List<CertificateModel> {
-        return certificateRepository.findAll()
+    override fun getAll(): Set<CertificateModel> {
+        return certificateRepository.findAll().toSet()
     }
 }

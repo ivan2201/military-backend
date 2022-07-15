@@ -10,4 +10,5 @@ interface ObjectInformatizationRepository : JpaRepository<ObjectInformatizationM
 
     fun findAllByMilitaryBase(militaryBaseModel: MilitaryBaseModel): Set<ObjectInformatizationModel>
 
+    fun findAllByMilitaryBaseId(militaryBaseId: Int): Set<ObjectInformatizationModel>
 }

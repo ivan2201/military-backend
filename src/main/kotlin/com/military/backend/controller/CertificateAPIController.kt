@@ -14,7 +14,7 @@ class CertificateAPIController {
 
     @GetMapping("api/certificates/")
     fun getCertificates():
-            List<CertificateModel> {
+            Set<CertificateModel> {
         return certificateService.getAll()
     }
 

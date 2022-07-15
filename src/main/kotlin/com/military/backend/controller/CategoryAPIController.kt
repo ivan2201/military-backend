@@ -14,7 +14,7 @@ class CategoryAPIController {
 
     @GetMapping("api/categories/")
     fun getCategories():
-            List<CategoryModel> {
+            Set<CategoryModel> {
         return categoryService.getAll()
     }
 }

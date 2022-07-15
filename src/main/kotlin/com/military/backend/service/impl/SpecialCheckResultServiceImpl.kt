@@ -37,7 +37,7 @@ class SpecialCheckResultServiceImpl: SpecialCheckResultService {
         specialCheckResultRepository.delete(specCheckResult)
     }
 
-    override fun getAll(): List<SpecialCheckResultModel> {
-        return specialCheckResultRepository.findAll()
+    override fun getAll(): Set<SpecialCheckResultModel> {
+        return specialCheckResultRepository.findAll().toSet()
     }
 }

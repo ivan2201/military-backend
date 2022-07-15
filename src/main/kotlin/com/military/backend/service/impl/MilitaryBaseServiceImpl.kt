@@ -37,8 +37,8 @@ class MilitaryBaseServiceImpl: MilitaryBaseService {
         militaryBaseRepository.delete(militaryBase)
     }
 
-    override fun getAll(): List<MilitaryBaseModel>
+    override fun getAll(): Set<MilitaryBaseModel>
     {
-        return militaryBaseRepository.findAll()
+        return militaryBaseRepository.findAll().toSet()
     }
 }

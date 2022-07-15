@@ -15,7 +15,7 @@ class InnerDocumentAPIController {
 
     @GetMapping("api/inner-documents/")
     fun getInnerDocuments(@RequestParam("inform_obj_id") informObjectId: Int?):
-            List<InnerDocumentModel> {
+            Set<InnerDocumentModel> {
         return innerDocumentService.getAllByInformatizationObjectId(informObjectId)
     }
 

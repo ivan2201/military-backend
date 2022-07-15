@@ -37,14 +37,14 @@ class ObjectInformatizationServiceImpl: ObjectInformatizationService {
         objectInformatizationRepository.delete(informatizationObject)
     }
 
-    override fun getAllByMilitaryBaseId(militaryBaseId: Int?): List<ObjectInformatizationModel> {
+    override fun getAllByMilitaryBaseId(militaryBaseId: Int?): Set<ObjectInformatizationModel> {
         militaryBaseId?.let {
             return objectInformatizationRepository.findAllByMilitaryBaseId(militaryBaseId)
         }
         return getAll()
     }
 
-    override fun getAll(): List<ObjectInformatizationModel> {
-        return objectInformatizationRepository.findAll()
+    override fun getAll(): Set<ObjectInformatizationModel> {
+        return objectInformatizationRepository.findAll().toSet()
     }
 }

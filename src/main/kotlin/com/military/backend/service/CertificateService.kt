@@ -7,5 +7,5 @@ interface CertificateService {
     fun edit(certificate: CertificateModel): CertificateModel
     fun get(id: Int): CertificateModel
     fun delete(certificate: CertificateModel)
-    fun getAll(): List<CertificateModel>
+    fun getAll(): Set<CertificateModel>
 }

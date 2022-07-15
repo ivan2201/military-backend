@@ -7,5 +7,5 @@ interface SpecialInvestigationService {
     fun edit(specInvestigation: SpecialInvestigationModel): SpecialInvestigationModel
     fun get(id: Int): SpecialInvestigationModel
     fun delete(specInvestigation: SpecialInvestigationModel)
-    fun getAll(): List<SpecialInvestigationModel>
+    fun getAll(): Set<SpecialInvestigationModel>
 }

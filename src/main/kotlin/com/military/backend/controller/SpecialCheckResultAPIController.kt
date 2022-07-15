@@ -14,7 +14,7 @@ class SpecialCheckResultAPIController {
 
     @GetMapping("api/spec-checks/")
     fun getSpecialCheckResults():
-            List<SpecialCheckResultModel> {
+            Set<SpecialCheckResultModel> {
         return specialCheckResultService.getAll()
     }
 }

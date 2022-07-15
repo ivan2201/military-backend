@@ -15,7 +15,7 @@ class InformatizationObjectAPIController {
 
     @GetMapping("api/informatization-objects/")
     fun getInformatizationObjects(@RequestParam("mil_base_id") militaryBaseId: Int?):
-            List<ObjectInformatizationModel> {
+            Set<ObjectInformatizationModel> {
         return objectInformatizationService.getAllByMilitaryBaseId(militaryBaseId)
     }
 }

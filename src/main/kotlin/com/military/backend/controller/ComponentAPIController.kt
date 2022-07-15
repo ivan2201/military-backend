@@ -15,7 +15,7 @@ class ComponentAPIController {
 
     @GetMapping("api/components/")
     fun getComponents(@RequestParam("inform_obj_id") informObjectId: Int?):
-            List<ComponentModel> {
+            Set<ComponentModel> {
         return componentService.getAllByInformatizationObjectId(informObjectId)
     }
 }

@@ -14,7 +14,7 @@ class SpecialInvestigationAPIController {
 
     @GetMapping("api/spec-investigations/")
     fun getSpecialInvestigations():
-            List<SpecialInvestigationModel> {
+            Set<SpecialInvestigationModel> {
         return specialInvestigationService.getAll()
     }
 }

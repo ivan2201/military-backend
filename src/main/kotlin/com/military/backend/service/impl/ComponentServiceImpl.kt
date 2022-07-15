@@ -37,13 +37,13 @@ class ComponentServiceImpl: ComponentService {
         componentRepository.delete(component)
     }
 
-    override fun getAll(): List<ComponentModel> {
-        return componentRepository.findAll()
+    override fun getAll(): Set<ComponentModel> {
+        return componentRepository.findAll().toSet()
     }
 
-    override fun getAllByInformatizationObjectId(iOId: Int?): List<ComponentModel> {
+    override fun getAllByInformatizationObjectId(iOId: Int?): Set<ComponentModel> {
         iOId?.let {
-            return componentRepository.findAllByInformatizationObjectId(iOId)
+            return componentRepository.findAllByObjectInformatizationId(iOId).toSet()
         }
         return getAll()
     }
