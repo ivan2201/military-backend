@@ -43,9 +43,9 @@ class ExcelHandler {
     )
 
     private val columnWidthMap = mapOf(
-        militaryBaseHeader to arrayOf(40 * 256, 8 * 256, 30 * 256),
+        militaryBaseHeader to arrayOf(50 * 256, 8 * 256, 40 * 256),
         informObjectHeader to arrayOf(30 * 256),
-        certHeader to arrayOf(30 * 256, 15 * 256, 15 * 256, 15 * 256, 15 * 256),
+        certHeader to arrayOf(15 * 256, 15 * 256, 15 * 256, 20 * 256, 40 * 256),
         siHeader to arrayOf(15 * 256, 15 * 256),
         scrHeader to arrayOf(15 * 256, 15 * 256),
         componentsHeader to arrayOf(30 * 256, 20 * 256),
@@ -53,7 +53,9 @@ class ExcelHandler {
     )
 
     fun generateFullExcel(): File {
-        val mappedObjects = objectInformatizationRepository!!.findAll().groupBy { it.militaryBase }
+        val mappedObjects = objectInformatizationRepository!!.findAll()
+            .sortedWith(compareBy({it.militaryBase?.name}, {it.name}))
+            .groupBy { it.militaryBase }
         val headers = listOf(
             militaryBaseHeader,
             informObjectHeader,
@@ -70,7 +72,8 @@ class ExcelHandler {
 
     fun generateMilitaryBaseExcel(militaryBase: MilitaryBaseModel): File {
         val mappedObjects = mapOf(
-            militaryBase as MilitaryBaseModel? to objectInformatizationRepository!!.findAllByMilitaryBase(militaryBase)
+            militaryBase as MilitaryBaseModel? to
+                    objectInformatizationRepository!!.findAllByMilitaryBase(militaryBase).sortedBy { it.name }
         )
         val headers = listOf(
             informObjectHeader,
@@ -82,7 +85,7 @@ class ExcelHandler {
         )
 
         val wb = generateExcelWorkBook(mappedObjects, headers)
-        return writeExcel(wb, "Объекты информатизации военной части ${militaryBase.name}")
+        return writeExcel(wb, "Объекты информатизации военной части ${militaryBase.baseNumber}")
     }
 
     fun generateObjInfromExcel(informatizationObject: ObjectInformatizationModel): File {
@@ -99,7 +102,7 @@ class ExcelHandler {
         return writeExcel(
             wb,
             "Объект информатизации ${informatizationObject.name} " +
-                    "военной части ${informatizationObject.militaryBase?.name}"
+                    "военной части ${informatizationObject.militaryBase?.baseNumber}"
         )
     }
 
@@ -210,7 +213,7 @@ class ExcelHandler {
                         printMilitaryBase = false
 
                         row.getCell(cellIndex - 3).setCellValue(base?.name ?: "")
-                        row.getCell(cellIndex - 2).setCellValue(base?.baseNumber?.toString() ?: "")
+                        row.getCell(cellIndex - 2).setCellValue(base?.baseNumber ?: "")
                         row.getCell(cellIndex - 1).setCellValue(base?.location ?: "")
                     }
                 }
@@ -262,7 +265,7 @@ class ExcelHandler {
                 cell.setCellValue(objectInform.specialCheckResult?.approveDate)
 
                 // components general info
-                val components = objectInform.components?.toList() ?: emptyList()
+                val components = objectInform.components?.toList()?.sortedBy { it.name } ?: emptyList()
                 cell = row.createCell(cellIndex++)
                 cell.setCellStyle(normalCenterStyle)
                 cell.setCellValue("Всего комплектующих: ${components.size}")
@@ -273,7 +276,7 @@ class ExcelHandler {
                 sheet.addMergedRegion(CellRangeAddress(i, i, cellIndex - 2, cellIndex - 1))
 
                 // inner docs general info
-                val innerDocuments = objectInform.innerDocuments?.toList() ?: emptyList()
+                val innerDocuments = objectInform.innerDocuments?.toList()?.sortedBy { it.name } ?: emptyList()
                 cell = row.createCell(cellIndex++)
                 cell.setCellStyle(normalCenterStyle)
                 cell.setCellValue("Всего документов: ${innerDocuments.size}")
