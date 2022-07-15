@@ -1,10 +1,13 @@
 package com.military.backend
 
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
-class Main
-fun main(args: Array<String>) {
-    runApplication<Main>(*args)
+@EnableScheduling
+class Application
+
+fun main() {
+    SpringApplication.run(Application::class.java)
 }

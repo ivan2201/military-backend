@@ -27,21 +27,29 @@ data class InnerDocumentModel(
 
     @Column(name = "approve_date")
     val approveDate: Date? = null,
-)
-{
+
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as InnerDocumentModel
+
+        if (id != other.id) return false
+        if (objectInformatization != other.objectInformatization) return false
+        if (name != other.name) return false
+        if (registrationNumber != other.registrationNumber) return false
+        if (approveDate != other.approveDate) return false
+
+        return true
+    }
 
     override fun hashCode(): Int {
-        return registrationNumber.hashCode()
-    }
-    override fun equals(other: Any?): Boolean {
-        if (other is InnerDocumentModel)
-        {
-            if (( id == null || id == -1 || other.id == null || other.id == -1
-                        || other.id == id)
-                && other.name == name
-                && other.registrationNumber == registrationNumber)
-                return true
-        }
-        return false
+        var result = id ?: 0
+        result = 31 * result + (objectInformatization?.hashCode() ?: 0)
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (registrationNumber?.hashCode() ?: 0)
+        result = 31 * result + (approveDate?.hashCode() ?: 0)
+        return result
     }
 }

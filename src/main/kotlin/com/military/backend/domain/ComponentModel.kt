@@ -23,22 +23,27 @@ data class ComponentModel(
 
     @Column(name = "series_number")
     val seriesNumber: String? = null,
-    )
-{
 
-    override fun hashCode(): Int {
-        return seriesNumber.hashCode()
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ComponentModel
+
+        if (id != other.id) return false
+        if (objectInformatization != other.objectInformatization) return false
+        if (name != other.name) return false
+        if (seriesNumber != other.seriesNumber) return false
+
+        return true
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (other is ComponentModel)
-        {
-            if (( id == null || id == -1 || other.id == null || other.id == -1
-                        || other.id == id)
-                && other.name == name
-                && other.seriesNumber == seriesNumber)
-                return true
-        }
-        return false
+    override fun hashCode(): Int {
+        var result = id ?: 0
+        result = 31 * result + (objectInformatization?.hashCode() ?: 0)
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (seriesNumber?.hashCode() ?: 0)
+        return result
     }
 }
