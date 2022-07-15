@@ -37,6 +37,10 @@ class ComponentServiceImpl: ComponentService {
         componentRepository.delete(component)
     }
 
+    override fun deleteById(componentId: Int) {
+        componentRepository.deleteById(componentId)
+    }
+
     override fun getAll(): Set<ComponentModel> {
         return componentRepository.findAll().toSet()
     }

@@ -7,6 +7,7 @@ interface InnerDocumentService {
     fun edit(document: InnerDocumentModel): InnerDocumentModel
     fun get(id: Int): InnerDocumentModel
     fun delete(document: InnerDocumentModel)
+    fun deleteById(documentId: Int)
     fun getAllByInformatizationObjectId(iOId: Int?): Set<InnerDocumentModel>
     fun getAll(): Set<InnerDocumentModel>
 }

@@ -37,6 +37,10 @@ class InnerDocumentServiceImpl: InnerDocumentService {
         innerDocumentRepository.delete(document)
     }
 
+    override fun deleteById(documentId: Int) {
+        innerDocumentRepository.deleteById(documentId)
+    }
+
     override fun getAllByInformatizationObjectId(iOId: Int?): Set<InnerDocumentModel> {
         iOId?.let {
             return innerDocumentRepository.findAllByObjectInformatizationId(iOId).toSet()

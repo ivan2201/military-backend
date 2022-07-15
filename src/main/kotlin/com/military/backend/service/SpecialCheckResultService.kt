@@ -7,5 +7,6 @@ interface SpecialCheckResultService {
     fun edit(specCheckResult: SpecialCheckResultModel): SpecialCheckResultModel
     fun get(id: Int): SpecialCheckResultModel
     fun delete(specCheckResult: SpecialCheckResultModel)
+    fun deleteById(specCheckResultId: Int)
     fun getAll(): Set<SpecialCheckResultModel>
 }

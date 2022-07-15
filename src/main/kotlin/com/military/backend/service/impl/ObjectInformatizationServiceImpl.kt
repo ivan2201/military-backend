@@ -37,6 +37,10 @@ class ObjectInformatizationServiceImpl: ObjectInformatizationService {
         objectInformatizationRepository.delete(informatizationObject)
     }
 
+    override fun deleteById(informatizationObjectId: Int) {
+        objectInformatizationRepository.deleteById(informatizationObjectId)
+    }
+
     override fun getAllByMilitaryBaseId(militaryBaseId: Int?): Set<ObjectInformatizationModel> {
         militaryBaseId?.let {
             return objectInformatizationRepository.findAllByMilitaryBaseId(militaryBaseId)

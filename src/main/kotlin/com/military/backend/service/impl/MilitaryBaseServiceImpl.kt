@@ -37,6 +37,11 @@ class MilitaryBaseServiceImpl: MilitaryBaseService {
         militaryBaseRepository.delete(militaryBase)
     }
 
+    override fun deleteById(militaryBaseId: Int)
+    {
+        militaryBaseRepository.deleteById(militaryBaseId)
+    }
+
     override fun getAll(): Set<MilitaryBaseModel>
     {
         return militaryBaseRepository.findAll().toSet()
