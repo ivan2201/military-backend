@@ -1,6 +1,10 @@
 package com.military.backend.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.Hibernate
+import org.hibernate.annotations.CreationTimestamp
 import java.sql.Date
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -25,28 +29,24 @@ data class InnerDocumentModel(
     @Column(name = "approve_date")
     val approveDate: Date? = null,
 
+    @JsonIgnore
+    @CreationTimestamp
+    @Column(name = "created")
+    val created: LocalDateTime? = null
+
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
         other as InnerDocumentModel
 
-        if (id != other.id) return false
-        if (objectInformatization != other.objectInformatization) return false
-        if (name != other.name) return false
-        if (registrationNumber != other.registrationNumber) return false
-        if (approveDate != other.approveDate) return false
-
-        return true
+        return id != null && id == other.id
     }
 
-    override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + (objectInformatization?.hashCode() ?: 0)
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (registrationNumber?.hashCode() ?: 0)
-        result = 31 * result + (approveDate?.hashCode() ?: 0)
-        return result
+    override fun hashCode(): Int = javaClass.hashCode()
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , name = $name , registrationNumber = $registrationNumber , approveDate = $approveDate , created = $created )"
     }
 }
