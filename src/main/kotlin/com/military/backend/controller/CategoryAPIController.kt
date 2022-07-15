@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController
 class CategoryAPIController {
 
     @Autowired
-    lateinit var categoryService: CategoryService
+    var categoryService: CategoryService? = null
 
     @GetMapping("api/categories/")
     fun getCategories():
             Set<CategoryModel> {
-        return categoryService.getAll()
+        return categoryService!!.getAll()
     }
 }

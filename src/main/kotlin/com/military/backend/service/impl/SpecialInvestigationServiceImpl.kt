@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service
 @Service
 class SpecialInvestigationServiceImpl: SpecialInvestigationService {
     @Autowired
-    lateinit var specialInvestigationRepository: SpecialInvestigationRepository
+    var specialInvestigationRepository: SpecialInvestigationRepository? = null
 
     override fun add(specInvestigation: SpecialInvestigationModel): SpecialInvestigationModel
     {
         if (specInvestigation.id == null || specInvestigation.id == -1)
-            return specialInvestigationRepository.save(specInvestigation)
+            return specialInvestigationRepository!!.save(specInvestigation)
         else
             throw Exception("Bad value")
     }
@@ -22,26 +22,26 @@ class SpecialInvestigationServiceImpl: SpecialInvestigationService {
     override fun edit(specInvestigation: SpecialInvestigationModel): SpecialInvestigationModel
     {
         if (specInvestigation.id != null && specInvestigation.id > 0)
-            return specialInvestigationRepository.save(specInvestigation)
+            return specialInvestigationRepository!!.save(specInvestigation)
         else
             throw Exception("Bad value")
     }
 
     override fun get(id: Int): SpecialInvestigationModel
     {
-        return specialInvestigationRepository.getOne(id)
+        return specialInvestigationRepository!!.getOne(id)
     }
 
     override fun delete(specInvestigation: SpecialInvestigationModel)
     {
-        specialInvestigationRepository.delete(specInvestigation)
+        specialInvestigationRepository!!.delete(specInvestigation)
     }
 
     override fun deleteById(specInvestigationId: Int) {
-        specialInvestigationRepository.deleteById(specInvestigationId)
+        specialInvestigationRepository!!.deleteById(specInvestigationId)
     }
 
     override fun getAll(): Set<SpecialInvestigationModel> {
-        return specialInvestigationRepository.findAll().toSet()
+        return specialInvestigationRepository!!.findAll().toSet()
     }
 }

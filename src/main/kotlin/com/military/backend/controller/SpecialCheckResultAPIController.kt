@@ -9,43 +9,43 @@ import org.springframework.web.bind.annotation.*
 class SpecialCheckResultAPIController {
 
     @Autowired
-    lateinit var specialCheckResultService: SpecialCheckResultService
+    var specialCheckResultService: SpecialCheckResultService? = null
 
     @GetMapping("api/spec-checks/")
     fun getSpecialCheckResults():
             Set<SpecialCheckResultModel> {
-        return specialCheckResultService.getAll()
+        return specialCheckResultService!!.getAll()
     }
     
     @GetMapping("api/spec-check/{id}")
     fun getSpecialCheckResult(@PathVariable specCheckId: Int): SpecialCheckResultModel {
-        return specialCheckResultService.get(specCheckId)
+        return specialCheckResultService!!.get(specCheckId)
     }
 
     @PostMapping("api/spec-check/create", consumes = ["application/json"],
         produces = ["application/json"])
     fun createSpecialCheckResult(@RequestBody specCheck: SpecialCheckResultModel):
             SpecialCheckResultModel {
-        return specialCheckResultService.add(specCheck)
+        return specialCheckResultService!!.add(specCheck)
     }
 
     @PostMapping("api/spec-check/update", consumes = ["application/json"],
         produces = ["application/json"])
     fun updateSpecialCheckResult(@RequestBody specCheck: SpecialCheckResultModel):
             SpecialCheckResultModel {
-        return specialCheckResultService.edit(specCheck)
+        return specialCheckResultService!!.edit(specCheck)
     }
 
     @PostMapping("api/spec-check/{id}/delete")
     fun deleteSpecialCheckResultById(@RequestParam specCheckId: Int)
     {
-        specialCheckResultService.deleteById(specCheckId)
+        specialCheckResultService!!.deleteById(specCheckId)
     }
 
     @PostMapping("api/spec-check/delete", consumes = ["application/json"],
         produces = ["application/json"])
     fun deleteSpecialCheckResult(@RequestBody specCheck: SpecialCheckResultModel)
     {
-        specialCheckResultService.delete(specCheck)
+        specialCheckResultService!!.delete(specCheck)
     }
 }

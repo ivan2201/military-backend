@@ -9,43 +9,43 @@ import org.springframework.web.bind.annotation.*
 class SpecialInvestigationAPIController {
 
     @Autowired
-    lateinit var specialInvestigationService: SpecialInvestigationService
+    var specialInvestigationService: SpecialInvestigationService? = null
 
     @GetMapping("api/spec-investigations/")
     fun getSpecialInvestigations():
             Set<SpecialInvestigationModel> {
-        return specialInvestigationService.getAll()
+        return specialInvestigationService!!.getAll()
     }
 
     @GetMapping("api/spec-investigation/{id}")
     fun getSpecialInvestigation(@PathVariable specInvestigationId: Int): SpecialInvestigationModel {
-        return specialInvestigationService.get(specInvestigationId)
+        return specialInvestigationService!!.get(specInvestigationId)
     }
 
     @PostMapping("api/spec-investigation/create", consumes = ["application/json"],
         produces = ["application/json"])
     fun createSpecialInvestigation(@RequestBody specInvestigation: SpecialInvestigationModel):
             SpecialInvestigationModel {
-        return specialInvestigationService.add(specInvestigation)
+        return specialInvestigationService!!.add(specInvestigation)
     }
 
     @PostMapping("api/spec-investigation/update", consumes = ["application/json"],
         produces = ["application/json"])
     fun updateSpecialInvestigation(@RequestBody specInvestigation: SpecialInvestigationModel):
             SpecialInvestigationModel {
-        return specialInvestigationService.edit(specInvestigation)
+        return specialInvestigationService!!.edit(specInvestigation)
     }
 
     @PostMapping("api/spec-investigation/{id}/delete")
     fun deleteSpecialInvestigationById(@RequestParam specInvestigationId: Int)
     {
-        specialInvestigationService.deleteById(specInvestigationId)
+        specialInvestigationService!!.deleteById(specInvestigationId)
     }
 
     @PostMapping("api/spec-investigation/delete", consumes = ["application/json"],
         produces = ["application/json"])
     fun deleteSpecialInvestigation(@RequestBody specInvestigation: SpecialInvestigationModel)
     {
-        specialInvestigationService.delete(specInvestigation)
+        specialInvestigationService!!.delete(specInvestigation)
     }
 }

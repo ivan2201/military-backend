@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service
 @Service
 class CertificateServiceImpl: CertificateService {
     @Autowired
-    lateinit var certificateRepository: CertificateRepository
+    var certificateRepository: CertificateRepository? = null
 
     override fun add(certificate: CertificateModel): CertificateModel
     {
         if (certificate.id == null || certificate.id == -1)
-            return certificateRepository.save(certificate)
+            return certificateRepository!!.save(certificate)
         else
             throw Exception("Bad value")
     }
@@ -22,26 +22,26 @@ class CertificateServiceImpl: CertificateService {
     override fun edit(certificate: CertificateModel): CertificateModel
     {
         if (certificate.id != null && certificate.id > 0)
-            return certificateRepository.save(certificate)
+            return certificateRepository!!.save(certificate)
         else
             throw Exception("Bad value")
     }
 
     override fun get(id: Int): CertificateModel
     {
-        return certificateRepository.getOne(id)
+        return certificateRepository!!.getOne(id)
     }
 
     override fun delete(certificate: CertificateModel)
     {
-        certificateRepository.delete(certificate)
+        certificateRepository!!.delete(certificate)
     }
 
     override fun deleteById(certificateId: Int) {
-        certificateRepository.deleteById(certificateId)
+        certificateRepository!!.deleteById(certificateId)
     }
 
     override fun getAll(): Set<CertificateModel> {
-        return certificateRepository.findAll().toSet()
+        return certificateRepository!!.findAll().toSet()
     }
 }

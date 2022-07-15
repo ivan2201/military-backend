@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service
 @Service
 class MilitaryBaseServiceImpl: MilitaryBaseService {
     @Autowired
-    lateinit var militaryBaseRepository: MilitaryBaseRepository
+    var militaryBaseRepository: MilitaryBaseRepository? = null
 
     override fun add(militaryBase: MilitaryBaseModel): MilitaryBaseModel
     {
         if (militaryBase.id == null || militaryBase.id == -1)
-            return militaryBaseRepository.save(militaryBase)
+            return militaryBaseRepository!!.save(militaryBase)
         else
             throw Exception("Bad value")
     }
@@ -22,28 +22,28 @@ class MilitaryBaseServiceImpl: MilitaryBaseService {
     override fun edit(militaryBase: MilitaryBaseModel): MilitaryBaseModel
     {
         if (militaryBase.id != null && militaryBase.id > 0)
-            return militaryBaseRepository.save(militaryBase)
+            return militaryBaseRepository!!.save(militaryBase)
         else
             throw Exception("Bad value")
     }
 
     override fun get(id: Int): MilitaryBaseModel
     {
-        return militaryBaseRepository.getOne(id)
+        return militaryBaseRepository!!.getOne(id)
     }
 
     override fun delete(militaryBase: MilitaryBaseModel)
     {
-        militaryBaseRepository.delete(militaryBase)
+        militaryBaseRepository!!.delete(militaryBase)
     }
 
     override fun deleteById(militaryBaseId: Int)
     {
-        militaryBaseRepository.deleteById(militaryBaseId)
+        militaryBaseRepository!!.deleteById(militaryBaseId)
     }
 
     override fun getAll(): Set<MilitaryBaseModel>
     {
-        return militaryBaseRepository.findAll().toSet()
+        return militaryBaseRepository!!.findAll().toSet()
     }
 }

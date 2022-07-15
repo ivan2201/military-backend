@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service
 @Service
 class ComponentServiceImpl: ComponentService {
     @Autowired
-    lateinit var componentRepository: ComponentRepository
+    var componentRepository: ComponentRepository? = null
 
     override fun add(component: ComponentModel): ComponentModel
     {
         if (component.id == null || component.id == -1)
-            return componentRepository.save(component)
+            return componentRepository!!.save(component)
         else
             throw Exception("Bad value")
     }
@@ -22,32 +22,32 @@ class ComponentServiceImpl: ComponentService {
     override fun edit(component: ComponentModel): ComponentModel
     {
         if (component.id != null && component.id > 0)
-            return componentRepository.save(component)
+            return componentRepository!!.save(component)
         else
             throw Exception("Bad value")
     }
 
     override fun get(id: Int): ComponentModel
     {
-        return componentRepository.getOne(id)
+        return componentRepository!!.getOne(id)
     }
 
     override fun delete(component: ComponentModel)
     {
-        componentRepository.delete(component)
+        componentRepository!!.delete(component)
     }
 
     override fun deleteById(componentId: Int) {
-        componentRepository.deleteById(componentId)
+        componentRepository!!.deleteById(componentId)
     }
 
     override fun getAll(): Set<ComponentModel> {
-        return componentRepository.findAll().toSet()
+        return componentRepository!!.findAll().toSet()
     }
 
     override fun getAllByInformatizationObjectId(iOId: Int?): Set<ComponentModel> {
         iOId?.let {
-            return componentRepository.findAllByObjectInformatizationId(iOId).toSet()
+            return componentRepository!!.findAllByObjectInformatizationId(iOId).toSet()
         }
         return getAll()
     }

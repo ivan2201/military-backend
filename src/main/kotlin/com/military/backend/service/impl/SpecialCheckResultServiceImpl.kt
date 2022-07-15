@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service
 @Service
 class SpecialCheckResultServiceImpl: SpecialCheckResultService {
     @Autowired
-    lateinit var specialCheckResultRepository: SpecialCheckResultRepository
+    var specialCheckResultRepository: SpecialCheckResultRepository? = null
 
     override fun add(specCheckResult: SpecialCheckResultModel): SpecialCheckResultModel
     {
         if (specCheckResult.id == null || specCheckResult.id == -1)
-            return specialCheckResultRepository.save(specCheckResult)
+            return specialCheckResultRepository!!.save(specCheckResult)
         else
             throw Exception("Bad value")
     }
@@ -22,26 +22,26 @@ class SpecialCheckResultServiceImpl: SpecialCheckResultService {
     override fun edit(specCheckResult: SpecialCheckResultModel): SpecialCheckResultModel
     {
         if (specCheckResult.id != null && specCheckResult.id > 0)
-            return specialCheckResultRepository.save(specCheckResult)
+            return specialCheckResultRepository!!.save(specCheckResult)
         else
             throw Exception("Bad value")
     }
 
     override fun get(id: Int): SpecialCheckResultModel
     {
-        return specialCheckResultRepository.getOne(id)
+        return specialCheckResultRepository!!.getOne(id)
     }
 
     override fun delete(specCheckResult: SpecialCheckResultModel)
     {
-        specialCheckResultRepository.delete(specCheckResult)
+        specialCheckResultRepository!!.delete(specCheckResult)
     }
 
     override fun deleteById(specCheckResultId: Int) {
-        specialCheckResultRepository.deleteById(specCheckResultId)
+        specialCheckResultRepository!!.deleteById(specCheckResultId)
     }
 
     override fun getAll(): Set<SpecialCheckResultModel> {
-        return specialCheckResultRepository.findAll().toSet()
+        return specialCheckResultRepository!!.findAll().toSet()
     }
 }
