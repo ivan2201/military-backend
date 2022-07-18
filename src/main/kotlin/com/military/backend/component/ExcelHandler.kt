@@ -1,14 +1,11 @@
 package com.military.backend.component
 
-import com.military.backend.domain.MilitaryBaseModel
 import com.military.backend.domain.ObjectInformatizationModel
-import com.military.backend.repository.ObjectInformatizationRepository
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFCell
 import org.apache.poi.xssf.usermodel.XSSFRow
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.io.File
 import java.io.FileOutputStream
@@ -17,9 +14,6 @@ import kotlin.math.max
 
 @Component
 class ExcelHandler {
-
-    @Autowired
-    private val objectInformatizationRepository: ObjectInformatizationRepository? = null
 
     // headers
     private final val militaryBaseHeader = "Подразделение или в/ч"
@@ -50,87 +44,39 @@ class ExcelHandler {
         innerDocsHeader to arrayOf(30 * 256, 20 * 256, 15 * 256),
     )
 
-    /**
-     * Creates excel [File] with info about all informatization objects from all military bases.
-     */
-    fun generateFullExcel(): File {
-        val mappedObjects = objectInformatizationRepository!!.findAll()
-            .sortedWith(compareBy({ it.militaryBase?.name }, { it.name }))
+    fun generateExcel(
+        informObjects: Iterable<ObjectInformatizationModel>,
+        addMilitaryBaseSection: Boolean,
+        addInformObjectSection: Boolean
+    ): File {
+
+        val mappedObjects = informObjects.sortedWith(compareBy({ it.militaryBase?.name }, { it.name }))
             .groupBy { it.militaryBase }
-        val headers = listOf(
-            militaryBaseHeader,
-            informObjectHeader,
+
+        val headers = mutableListOf(
             certHeader,
             siHeader,
             scrHeader,
             componentsHeader,
             innerDocsHeader
         )
+        if (addInformObjectSection) headers.add(0, informObjectHeader)
+        if (addMilitaryBaseSection) headers.add(0, militaryBaseHeader)
 
-        val wb = generateExcelWorkBook(mappedObjects, headers)
-        return writeExcel(wb, "Все объекты информатизации")
-    }
-
-    /**
-     * Creates excel [File] with info about all informatization objects for specified [militaryBase].
-     */
-    fun generateMilitaryBaseExcel(militaryBase: MilitaryBaseModel): File {
-        val mappedObjects = mapOf(
-            militaryBase as MilitaryBaseModel? to
-                    objectInformatizationRepository!!.findAllByMilitaryBase(militaryBase).sortedBy { it.name }
-        )
-        val headers = listOf(
-            informObjectHeader,
-            certHeader,
-            siHeader,
-            scrHeader,
-            componentsHeader,
-            innerDocsHeader
-        )
-
-        val wb = generateExcelWorkBook(mappedObjects, headers)
-        return writeExcel(wb, "Объекты информатизации военной части ${militaryBase.baseNumber}")
-    }
-
-    /**
-     * Creates excel [File] with info about specified [informatizationObject].
-     */
-    fun generateObjInfromExcel(informatizationObject: ObjectInformatizationModel): File {
-        val mappedObjects = mapOf(informatizationObject.militaryBase to listOf(informatizationObject))
-        val headers = listOf(
-            certHeader,
-            siHeader,
-            scrHeader,
-            componentsHeader,
-            innerDocsHeader
-        )
-
-        val wb = generateExcelWorkBook(mappedObjects, headers)
-        return writeExcel(
-            wb,
-            "Объект информатизации ${informatizationObject.name} " +
-                    "военной части ${informatizationObject.militaryBase?.baseNumber}"
-        )
-    }
-
-    private fun generateExcelWorkBook(
-        mappedObjects: Map<MilitaryBaseModel?, Iterable<ObjectInformatizationModel>>,
-        headers: Iterable<String>
-    ): Workbook {
         val wb = XSSFWorkbook()
-
-        val styles = createStyles(wb)
 
         val sheet = wb.createSheet(
             when {
-                headers.contains(militaryBaseHeader) ->
-                    "Все военные части"
-                headers.contains(militaryBaseHeader) ->
-                    "Военная часть №${mappedObjects.toList().first().first?.baseNumber ?: "00000"}"
+                addMilitaryBaseSection ->
+                    "Все объекты информатизации"
+                addInformObjectSection ->
+                    "Военная часть"
                 else ->
-                    "Объект информатизации \"${mappedObjects.toList().first().second.first().name}\""
+                    "Объект информатизации"
             }
         )
+
+        val styles = createStyles(wb)
 
         // sheet settings
         sheet.horizontallyCenter = true
@@ -360,30 +306,30 @@ class ExcelHandler {
             row = sheet.getRow(r)
 
             for (c in leftBorders) {
-                val borderThickness = if (c == 0) 3 else 2
+                val borderThickness = if (c == 0) boldBorder else normalBorder
                 cell = row.getCell(c, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)
                 cell.setCellStyle(withBorder(wb, cell.cellStyle, BorderSides(left = borderThickness)))
             }
 
             for (c in rightBorders) {
-                val borderThickness = if (c == totalSubheaders - 1) 3 else 2
+                val borderThickness = if (c == totalSubheaders - 1) boldBorder else normalBorder
                 cell = row.getCell(c, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)
                 cell.setCellStyle(withBorder(wb, cell.cellStyle, BorderSides(right = borderThickness)))
             }
         }
 
-        return wb
-    }
-
-    private fun writeExcel(wb: Workbook, fileName: String): File {
-        val excelFileName = "$fileName.xlsx"
-        FileOutputStream(excelFileName).use {
-            wb.write(it)
+        // generate temp file
+        val file = File.createTempFile("temp", ".xlsx", File("/temp"))
+        FileOutputStream(file).use {
+            wb.use { workbook ->
+                workbook.write(it)
+            }
         }
-        return File(excelFileName)
+        return file
     }
 
     private fun createStyles(wb: Workbook): Map<String, CellStyle> {
+
         val styles = mutableMapOf<String, CellStyle>()
 
         val df = wb.createDataFormat()
@@ -430,43 +376,49 @@ class ExcelHandler {
     }
 
     private fun withBorder(wb: Workbook, style: CellStyle, borderSides: BorderSides = BorderSides()): CellStyle {
+
         val borderedStyle = wb.createCellStyle().apply {
             cloneStyleFrom(style)
         }
 
         getBorderParams(borderSides.top).also {
             borderedStyle.borderTop = it.first ?: borderedStyle.borderTop
-            borderedStyle.topBorderColor = it.second
+            borderedStyle.topBorderColor = it.second ?: borderedStyle.topBorderColor
         }
 
         getBorderParams(borderSides.bottom).also {
-            borderedStyle.borderBottom = it.first ?: borderedStyle.borderTop
-            borderedStyle.bottomBorderColor = it.second
+            borderedStyle.borderBottom = it.first ?: borderedStyle.borderBottom
+            borderedStyle.bottomBorderColor = it.second ?: borderedStyle.bottomBorderColor
         }
 
         getBorderParams(borderSides.left).also {
-            borderedStyle.borderLeft = it.first ?: borderedStyle.borderTop
-            borderedStyle.leftBorderColor = it.second
+            borderedStyle.borderLeft = it.first ?: borderedStyle.borderLeft
+            borderedStyle.leftBorderColor = it.second ?: borderedStyle.leftBorderColor
         }
+
         getBorderParams(borderSides.right).also {
-            borderedStyle.borderRight = it.first ?: borderedStyle.borderTop
-            borderedStyle.rightBorderColor = it.second
+            borderedStyle.borderRight = it.first ?: borderedStyle.borderRight
+            borderedStyle.rightBorderColor = it.second ?: borderedStyle.rightBorderColor
         }
 
         return borderedStyle
     }
 
-    private fun getBorderParams(borderType: Int): Pair<BorderStyle?, Short> = when (borderType) {
-        1 -> BorderStyle.THIN to IndexedColors.GREY_50_PERCENT.index
-        2 -> BorderStyle.THIN to IndexedColors.GREY_80_PERCENT.index
-        3 -> BorderStyle.THICK to IndexedColors.GREY_80_PERCENT.index
-        else -> null to IndexedColors.BLACK.index
+    private val lightBorder = 1.toShort()
+    private val normalBorder = 2.toShort()
+    private val boldBorder = 3.toShort()
+
+    private fun getBorderParams(borderType: Short): Pair<BorderStyle?, Short?> = when (borderType) {
+        lightBorder -> BorderStyle.THIN to IndexedColors.GREY_50_PERCENT.index
+        normalBorder -> BorderStyle.THIN to IndexedColors.GREY_80_PERCENT.index
+        boldBorder -> BorderStyle.THICK to IndexedColors.GREY_80_PERCENT.index
+        else -> null to null
     }
 
     private data class BorderSides(
-        var top: Int = 0,
-        var bottom: Int = 0,
-        var left: Int = 0,
-        var right: Int = 0
+        var top: Short = 0,
+        var bottom: Short = 0,
+        var left: Short = 0,
+        var right: Short = 0
     )
 }
