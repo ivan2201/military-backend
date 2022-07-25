@@ -2,7 +2,10 @@ package com.military.backend.service.impl
 
 import com.military.backend.domain.InnerDocumentModel
 import com.military.backend.domain.dto.DocumentDTO
+import com.military.backend.domain.dto.EditDocumentDTO
+import com.military.backend.domain.dto.NewDocumentDTO
 import com.military.backend.repository.InnerDocumentRepository
+import com.military.backend.repository.ObjectInformatizationRepository
 import com.military.backend.service.InnerDocumentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -12,20 +15,23 @@ class InnerDocumentServiceImpl: InnerDocumentService {
     @Autowired
     var innerDocumentRepository: InnerDocumentRepository? = null
 
-    override fun add(document: DocumentDTO): DocumentDTO
+    @Autowired
+    var objectInformatizationRepository: ObjectInformatizationRepository? = null
+
+    override fun add(document: NewDocumentDTO): DocumentDTO
     {
-        if (document.id == -1)
-            return DocumentDTO(innerDocumentRepository!!.save(InnerDocumentModel(document)))
-        else
-            throw Exception("Bad value")
+        return DocumentDTO(innerDocumentRepository!!.save(
+            InnerDocumentModel(document,
+                document.oiId?.let { objectInformatizationRepository!!.getOne(it) }
+        )))
     }
 
-    override fun edit(document: DocumentDTO): DocumentDTO
+    override fun edit(document: EditDocumentDTO): DocumentDTO
     {
-        if (document.id > 0)
-            return DocumentDTO(innerDocumentRepository!!.save(InnerDocumentModel(document)))
-        else
-            throw Exception("Bad value")
+        return DocumentDTO(innerDocumentRepository!!.save(
+            InnerDocumentModel(document,
+                document.oiId?.let { objectInformatizationRepository!!.getOne(it) }
+            )))
     }
 
     override fun get(id: Int): DocumentDTO

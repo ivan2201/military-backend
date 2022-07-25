@@ -1,6 +1,8 @@
 package com.military.backend.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.military.backend.domain.dto.EditObjectInformatizationDTO
+import com.military.backend.domain.dto.NewObjectInformatizationDTO
 import com.military.backend.domain.dto.ObjectInformatizationDTO
 import org.hibernate.Hibernate
 import org.hibernate.annotations.CreationTimestamp
@@ -49,13 +51,15 @@ data class ObjectInformatizationModel(
     val created: LocalDateTime? = null
 
 ) {
-    constructor(objectInformatizationDTO: ObjectInformatizationDTO):
-            this(objectInformatizationDTO.id,
-                null,
-                null,
-                null,
-                null,
-                objectInformatizationDTO.name
+    constructor(objectInformatizationDTO: NewObjectInformatizationDTO, militaryBase: MilitaryBaseModel?):
+            this(name = objectInformatizationDTO.name, militaryBase = militaryBase)
+
+    constructor(objectInformatizationDTO: EditObjectInformatizationDTO, militaryBase: MilitaryBaseModel?,
+                cert: CertificateModel?, specialInvestigation: SpecialInvestigationModel?,
+                specialCheckResult: SpecialCheckResultModel?):
+            this(id = objectInformatizationDTO.id, name = objectInformatizationDTO.name,
+                militaryBase = militaryBase, cert = cert, specialCheckResult = specialCheckResult,
+                specialInvestigation = specialInvestigation
             )
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -1,6 +1,8 @@
 package com.military.backend.service.impl
 
 import com.military.backend.domain.ObjectInformatizationModel
+import com.military.backend.domain.dto.EditObjectInformatizationDTO
+import com.military.backend.domain.dto.NewObjectInformatizationDTO
 import com.military.backend.domain.dto.ObjectInformatizationDTO
 import com.military.backend.repository.ObjectInformatizationRepository
 import com.military.backend.service.ObjectInformatizationService
@@ -12,16 +14,13 @@ class ObjectInformatizationServiceImpl: ObjectInformatizationService {
     @Autowired
     var objectInformatizationRepository: ObjectInformatizationRepository? = null
 
-    override fun add(informatizationObject: ObjectInformatizationDTO): ObjectInformatizationDTO
+    override fun add(informatizationObject: NewObjectInformatizationDTO): ObjectInformatizationDTO
     {
-        if (informatizationObject.id == -1)
-            return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
+        return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
                 ObjectInformatizationModel(informatizationObject)))
-        else
-            throw Exception("Bad value")
     }
 
-    override fun edit(informatizationObject: ObjectInformatizationDTO): ObjectInformatizationDTO
+    override fun edit(informatizationObject: EditObjectInformatizationDTO): ObjectInformatizationDTO
     {
         if (informatizationObject.id > 0)
             return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
@@ -40,13 +39,10 @@ class ObjectInformatizationServiceImpl: ObjectInformatizationService {
         objectInformatizationRepository!!.deleteById(informatizationObjectId)
     }
 
-    override fun getAllByMilitaryBaseId(militaryBaseId: Int?): Set<ObjectInformatizationDTO> {
-        militaryBaseId?.let {
-            return ObjectInformatizationDTO.fromObjectInformatizationModelSet(
+    override fun getAllByMilitaryBaseId(militaryBaseId: Int): Set<ObjectInformatizationDTO> {
+        return ObjectInformatizationDTO.fromObjectInformatizationModelSet(
                     objectInformatizationRepository!!.findAllByMilitaryBaseId(militaryBaseId)
-            )
-        }
-        return getAll()
+        )
     }
 
     override fun getAll(): Set<ObjectInformatizationDTO> {

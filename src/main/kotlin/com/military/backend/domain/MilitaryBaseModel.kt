@@ -1,6 +1,7 @@
 package com.military.backend.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.military.backend.domain.dto.NewWarCampDTO
 import com.military.backend.domain.dto.WarCampDTO
 import org.hibernate.Hibernate
 import org.hibernate.annotations.CreationTimestamp
@@ -31,6 +32,9 @@ data class MilitaryBaseModel(
     val created: LocalDateTime? = null
 
 ) {
+    constructor(warCampDTO: NewWarCampDTO):
+            this(name=warCampDTO.name, baseNumber = warCampDTO.number, location = warCampDTO.location)
+
     constructor(warCampDTO: WarCampDTO):
             this(warCampDTO.id, warCampDTO.name, warCampDTO.number, warCampDTO.location)
 

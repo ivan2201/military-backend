@@ -1,6 +1,7 @@
 package com.military.backend.controller
 
 import com.military.backend.domain.SpecialInvestigationModel
+import com.military.backend.domain.dto.IdDTO
 import com.military.backend.service.SpecialInvestigationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -11,15 +12,15 @@ class SpecialInvestigationAPIController {
     @Autowired
     var specialInvestigationService: SpecialInvestigationService? = null
 
-    @GetMapping("api/spec-investigations/")
+    @GetMapping("api/spec-investigations")
     fun getSpecialInvestigations():
             Set<SpecialInvestigationModel> {
         return specialInvestigationService!!.getAll()
     }
 
-    @GetMapping("api/spec-investigation/{id}")
-    fun getSpecialInvestigation(@PathVariable id: Int): SpecialInvestigationModel {
-        return specialInvestigationService!!.get(id)
+    @GetMapping("api/spec-investigation")
+    fun getSpecialInvestigation(@RequestBody id: IdDTO): SpecialInvestigationModel {
+        return specialInvestigationService!!.get(id.id.toInt())
     }
 
     @PostMapping("api/spec-investigation/create", consumes = ["application/json"],
@@ -36,9 +37,9 @@ class SpecialInvestigationAPIController {
         return specialInvestigationService!!.edit(specInvestigation)
     }
 
-    @PostMapping("api/spec-investigation/{id}/delete")
-    fun deleteSpecialInvestigationById(@RequestParam specInvestigationId: Int)
+    @PostMapping("api/spec-investigation/delete")
+    fun deleteSpecialInvestigationById(@RequestBody specInvestigationId: IdDTO)
     {
-        specialInvestigationService!!.deleteById(specInvestigationId)
+        specialInvestigationService!!.deleteById(specInvestigationId.id.toInt())
     }
 }
