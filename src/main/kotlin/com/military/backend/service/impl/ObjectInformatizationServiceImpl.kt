@@ -1,6 +1,7 @@
 package com.military.backend.service.impl
 
 import com.military.backend.domain.ObjectInformatizationModel
+import com.military.backend.domain.dto.ObjectInformatizationDTO
 import com.military.backend.repository.ObjectInformatizationRepository
 import com.military.backend.service.ObjectInformatizationService
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,44 +12,46 @@ class ObjectInformatizationServiceImpl: ObjectInformatizationService {
     @Autowired
     var objectInformatizationRepository: ObjectInformatizationRepository? = null
 
-    override fun add(informatizationObject: ObjectInformatizationModel): ObjectInformatizationModel
+    override fun add(informatizationObject: ObjectInformatizationDTO): ObjectInformatizationDTO
     {
-        if (informatizationObject.id == null || informatizationObject.id == -1)
-            return objectInformatizationRepository!!.save(informatizationObject)
+        if (informatizationObject.id == -1)
+            return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
+                ObjectInformatizationModel(informatizationObject)))
         else
             throw Exception("Bad value")
     }
 
-    override fun edit(informatizationObject: ObjectInformatizationModel): ObjectInformatizationModel
+    override fun edit(informatizationObject: ObjectInformatizationDTO): ObjectInformatizationDTO
     {
-        if (informatizationObject.id != null && informatizationObject.id > 0)
-            return objectInformatizationRepository!!.save(informatizationObject)
+        if (informatizationObject.id > 0)
+            return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
+                ObjectInformatizationModel(informatizationObject)))
         else
             throw Exception("Bad value")
     }
 
-    override fun get(id: Int): ObjectInformatizationModel
+    override fun get(id: Int): ObjectInformatizationDTO
     {
-        return objectInformatizationRepository!!.getOne(id)
+        return ObjectInformatizationDTO(objectInformatizationRepository!!.getOne(id))
     }
 
-    override fun delete(informatizationObject: ObjectInformatizationModel)
-    {
-        objectInformatizationRepository!!.delete(informatizationObject)
-    }
 
     override fun deleteById(informatizationObjectId: Int) {
         objectInformatizationRepository!!.deleteById(informatizationObjectId)
     }
 
-    override fun getAllByMilitaryBaseId(militaryBaseId: Int?): Set<ObjectInformatizationModel> {
+    override fun getAllByMilitaryBaseId(militaryBaseId: Int?): Set<ObjectInformatizationDTO> {
         militaryBaseId?.let {
-            return objectInformatizationRepository!!.findAllByMilitaryBaseId(militaryBaseId)
+            return ObjectInformatizationDTO.fromObjectInformatizationModelSet(
+                    objectInformatizationRepository!!.findAllByMilitaryBaseId(militaryBaseId)
+            )
         }
         return getAll()
     }
 
-    override fun getAll(): Set<ObjectInformatizationModel> {
-        return objectInformatizationRepository!!.findAll().toSet()
+    override fun getAll(): Set<ObjectInformatizationDTO> {
+        return ObjectInformatizationDTO.fromObjectInformatizationModelSet(
+                objectInformatizationRepository!!.findAll().toSet()
+        )
     }
 }

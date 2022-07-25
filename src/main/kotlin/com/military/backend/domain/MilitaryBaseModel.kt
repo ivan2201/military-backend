@@ -1,6 +1,7 @@
 package com.military.backend.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.military.backend.domain.dto.WarCampDTO
 import org.hibernate.Hibernate
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
@@ -30,6 +31,9 @@ data class MilitaryBaseModel(
     val created: LocalDateTime? = null
 
 ) {
+    constructor(warCampDTO: WarCampDTO):
+            this(warCampDTO.id, warCampDTO.name, warCampDTO.number, warCampDTO.location)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false

@@ -1,6 +1,6 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.InnerDocumentModel
+import com.military.backend.domain.dto.DocumentDTO
 import com.military.backend.service.InnerDocumentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -13,24 +13,24 @@ class InnerDocumentAPIController {
 
     @GetMapping("api/inner-documents/")
     fun getInnerDocuments(@RequestParam("inform_obj_id") informObjectId: Int?):
-            Set<InnerDocumentModel> {
+            Set<DocumentDTO> {
         return innerDocumentService!!.getAllByInformatizationObjectId(informObjectId)
     }
 
     @GetMapping("api/inner-document/{id}")
-    fun getInnerDocument(@PathVariable innerDocumentId: Int): InnerDocumentModel {
+    fun getInnerDocument(@PathVariable innerDocumentId: Int): DocumentDTO {
         return innerDocumentService!!.get(innerDocumentId)
     }
 
     @PostMapping("api/inner-document/create", consumes = ["application/json"],
         produces = ["application/json"])
-    fun createInnerDocument(@RequestBody innerDocument: InnerDocumentModel): InnerDocumentModel {
+    fun createInnerDocument(@RequestBody innerDocument: DocumentDTO): DocumentDTO {
         return innerDocumentService!!.add(innerDocument)
     }
 
     @PostMapping("api/inner-document/update", consumes = ["application/json"],
         produces = ["application/json"])
-    fun updateInnerDocument(@RequestBody innerDocument: InnerDocumentModel): InnerDocumentModel {
+    fun updateInnerDocument(@RequestBody innerDocument: DocumentDTO): DocumentDTO {
         return innerDocumentService!!.edit(innerDocument)
     }
 
@@ -38,12 +38,5 @@ class InnerDocumentAPIController {
     fun deleteInnerDocumentById(@RequestParam innerDocumentId: Int)
     {
         innerDocumentService!!.deleteById(innerDocumentId)
-    }
-
-    @PostMapping("api/inner-document/delete", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun deleteInnerDocument(@RequestBody innerDocument: InnerDocumentModel)
-    {
-        innerDocumentService!!.delete(innerDocument)
     }
 }

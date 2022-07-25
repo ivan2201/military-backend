@@ -1,6 +1,7 @@
 package com.military.backend.service.impl
 
 import com.military.backend.domain.ComponentModel
+import com.military.backend.domain.dto.ComponentDTO
 import com.military.backend.repository.ComponentRepository
 import com.military.backend.service.ComponentService
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,43 +12,40 @@ class ComponentServiceImpl: ComponentService {
     @Autowired
     var componentRepository: ComponentRepository? = null
 
-    override fun add(component: ComponentModel): ComponentModel
+    override fun add(component: ComponentDTO): ComponentDTO
     {
-        if (component.id == null || component.id == -1)
-            return componentRepository!!.save(component)
+        if (component.id == -1)
+            return ComponentDTO(componentRepository!!.save(ComponentModel(component)))
         else
             throw Exception("Bad value")
     }
 
-    override fun edit(component: ComponentModel): ComponentModel
+    override fun edit(component: ComponentDTO): ComponentDTO
     {
-        if (component.id != null && component.id > 0)
-            return componentRepository!!.save(component)
+        if (component.id > 0)
+            return ComponentDTO(componentRepository!!.save(ComponentModel(component)))
         else
             throw Exception("Bad value")
     }
 
-    override fun get(id: Int): ComponentModel
+    override fun get(id: Int): ComponentDTO
     {
-        return componentRepository!!.getOne(id)
-    }
-
-    override fun delete(component: ComponentModel)
-    {
-        componentRepository!!.delete(component)
+        return ComponentDTO(componentRepository!!.getOne(id))
     }
 
     override fun deleteById(componentId: Int) {
         componentRepository!!.deleteById(componentId)
     }
 
-    override fun getAll(): Set<ComponentModel> {
-        return componentRepository!!.findAll().toSet()
+    override fun getAll(): Set<ComponentDTO> {
+        return ComponentDTO.fromComponentModelSet(componentRepository!!.findAll().toSet())
     }
 
-    override fun getAllByInformatizationObjectId(iOId: Int?): Set<ComponentModel> {
+    override fun getAllByInformatizationObjectId(iOId: Int?): Set<ComponentDTO> {
         iOId?.let {
-            return componentRepository!!.findAllByObjectInformatizationId(iOId).toSet()
+            return ComponentDTO.fromComponentModelSet(
+                componentRepository!!.findAllByObjectInformatizationId(iOId)
+            )
         }
         return getAll()
     }

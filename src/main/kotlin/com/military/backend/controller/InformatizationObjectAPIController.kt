@@ -1,6 +1,6 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.ObjectInformatizationModel
+import com.military.backend.domain.dto.ObjectInformatizationDTO
 import com.military.backend.service.ObjectInformatizationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -13,26 +13,26 @@ class InformatizationObjectAPIController {
 
     @GetMapping("api/informatization-objects/")
     fun getInformatizationObjects(@RequestParam("mil_base_id") militaryBaseId: Int?):
-            Set<ObjectInformatizationModel> {
+            Set<ObjectInformatizationDTO> {
         return objectInformatizationService!!.getAllByMilitaryBaseId(militaryBaseId)
     }
 
     @GetMapping("api/informatization-object/{id}")
-    fun getObjectInformatization(@PathVariable objectInformatizationId: Int): ObjectInformatizationModel {
+    fun getObjectInformatization(@PathVariable objectInformatizationId: Int): ObjectInformatizationDTO {
         return objectInformatizationService!!.get(objectInformatizationId)
     }
 
     @PostMapping("api/informatization-object/create", consumes = ["application/json"],
         produces = ["application/json"])
-    fun createObjectInformatization(@RequestBody objectInformatization: ObjectInformatizationModel): 
-            ObjectInformatizationModel {
+    fun createObjectInformatization(@RequestBody objectInformatization: ObjectInformatizationDTO):
+            ObjectInformatizationDTO {
         return objectInformatizationService!!.add(objectInformatization)
     }
 
     @PostMapping("api/informatization-object/update", consumes = ["application/json"],
         produces = ["application/json"])
-    fun updateObjectInformatization(@RequestBody objectInformatization: ObjectInformatizationModel): 
-            ObjectInformatizationModel {
+    fun updateObjectInformatization(@RequestBody objectInformatization: ObjectInformatizationDTO):
+            ObjectInformatizationDTO {
         return objectInformatizationService!!.edit(objectInformatization)
     }
 
@@ -40,12 +40,5 @@ class InformatizationObjectAPIController {
     fun deleteObjectInformatizationById(@RequestParam objectInformatizationId: Int)
     {
         objectInformatizationService!!.deleteById(objectInformatizationId)
-    }
-
-    @PostMapping("api/informatization-object/delete", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun deleteObjectInformatization(@RequestBody objectInformatization: ObjectInformatizationModel)
-    {
-        objectInformatizationService!!.delete(objectInformatization)
     }
 }

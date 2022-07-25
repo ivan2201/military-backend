@@ -1,6 +1,7 @@
 package com.military.backend.service.impl
 
 import com.military.backend.domain.MilitaryBaseModel
+import com.military.backend.domain.dto.WarCampDTO
 import com.military.backend.repository.MilitaryBaseRepository
 import com.military.backend.service.MilitaryBaseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,30 +12,25 @@ class MilitaryBaseServiceImpl: MilitaryBaseService {
     @Autowired
     var militaryBaseRepository: MilitaryBaseRepository? = null
 
-    override fun add(militaryBase: MilitaryBaseModel): MilitaryBaseModel
+    override fun add(militaryBase: WarCampDTO): WarCampDTO
     {
-        if (militaryBase.id == null || militaryBase.id == -1)
-            return militaryBaseRepository!!.save(militaryBase)
+        if (militaryBase.id == -1)
+            return WarCampDTO(militaryBaseRepository!!.save(MilitaryBaseModel(militaryBase)))
         else
             throw Exception("Bad value")
     }
 
-    override fun edit(militaryBase: MilitaryBaseModel): MilitaryBaseModel
+    override fun edit(militaryBase: WarCampDTO): WarCampDTO
     {
-        if (militaryBase.id != null && militaryBase.id > 0)
-            return militaryBaseRepository!!.save(militaryBase)
+        if (militaryBase.id > 0)
+            return WarCampDTO(militaryBaseRepository!!.save(MilitaryBaseModel(militaryBase)))
         else
             throw Exception("Bad value")
     }
 
-    override fun get(id: Int): MilitaryBaseModel
+    override fun get(id: Int): WarCampDTO
     {
-        return militaryBaseRepository!!.getOne(id)
-    }
-
-    override fun delete(militaryBase: MilitaryBaseModel)
-    {
-        militaryBaseRepository!!.delete(militaryBase)
+        return WarCampDTO(militaryBaseRepository!!.getOne(id))
     }
 
     override fun deleteById(militaryBaseId: Int)
@@ -42,8 +38,8 @@ class MilitaryBaseServiceImpl: MilitaryBaseService {
         militaryBaseRepository!!.deleteById(militaryBaseId)
     }
 
-    override fun getAll(): Set<MilitaryBaseModel>
+    override fun getAll(): Set<WarCampDTO>
     {
-        return militaryBaseRepository!!.findAll().toSet()
+        return WarCampDTO.fromMilitaryBaseModelSet(militaryBaseRepository!!.findAll().toSet())
     }
 }

@@ -21,7 +21,7 @@ data class CertificateModel(
     val category: CategoryModel? = null,
 
     @Column(name = "cert_number")
-    val certNumber: Int? = null,
+    val certNumber: String? = null,
 
     @Column(name = "approve_date")
     val approveDate: Date? = null,

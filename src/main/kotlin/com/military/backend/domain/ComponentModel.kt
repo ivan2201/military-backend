@@ -1,8 +1,7 @@
 package com.military.backend.domain
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.military.backend.serializer.CustomComponentSerializer
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.military.backend.domain.dto.ComponentDTO
 import org.hibernate.Hibernate
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
@@ -10,7 +9,6 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "component")
-@JsonSerialize(using = CustomComponentSerializer::class)
 data class ComponentModel(
 
     @Id
@@ -34,6 +32,9 @@ data class ComponentModel(
     val created: LocalDateTime? = null
 
 ) {
+    constructor(componentDTO: ComponentDTO): this(componentDTO.id, null,
+        componentDTO.name, componentDTO.series)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false

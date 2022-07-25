@@ -1,6 +1,6 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.MilitaryBaseModel
+import com.military.backend.domain.dto.WarCampDTO
 import com.military.backend.service.MilitaryBaseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,24 +17,24 @@ class MilitaryBaseAPIController {
     var militaryBaseService: MilitaryBaseService? = null
 
     @GetMapping("api/military-bases/")
-    fun getMilitaryBases(): Set<MilitaryBaseModel> {
+    fun getMilitaryBases(): Set<WarCampDTO> {
         return militaryBaseService!!.getAll()
     }
 
     @GetMapping("api/military-base/{id}")
-    fun getMilitaryBase(@PathVariable militaryBaseId: Int): MilitaryBaseModel {
+    fun getMilitaryBase(@PathVariable militaryBaseId: Int): WarCampDTO {
         return militaryBaseService!!.get(militaryBaseId)
     }
 
     @PostMapping("api/military-base/create", consumes = ["application/json"],
         produces = ["application/json"])
-    fun createMilitaryBase(@RequestBody militaryBaseModel: MilitaryBaseModel): MilitaryBaseModel {
+    fun createMilitaryBase(@RequestBody militaryBaseModel: WarCampDTO): WarCampDTO {
         return militaryBaseService!!.add(militaryBaseModel)
     }
 
     @PostMapping("api/military-base/update", consumes = ["application/json"],
         produces = ["application/json"])
-    fun updateMilitaryBase(@RequestBody militaryBaseModel: MilitaryBaseModel): MilitaryBaseModel {
+    fun updateMilitaryBase(@RequestBody militaryBaseModel: WarCampDTO): WarCampDTO {
         return militaryBaseService!!.edit(militaryBaseModel)
     }
 
@@ -42,12 +42,5 @@ class MilitaryBaseAPIController {
     fun deleteMilitaryBaseById(@RequestParam militaryBaseId: Int)
     {
         militaryBaseService!!.deleteById(militaryBaseId)
-    }
-
-    @PostMapping("api/military-base/delete", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun deleteMilitaryBase(@RequestBody militaryBase: MilitaryBaseModel)
-    {
-        militaryBaseService!!.delete(militaryBase)
     }
 }

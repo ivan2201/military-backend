@@ -1,13 +1,12 @@
 package com.military.backend.service
 
-import com.military.backend.domain.InnerDocumentModel
+import com.military.backend.domain.dto.DocumentDTO
 
 interface InnerDocumentService {
-    fun add(document: InnerDocumentModel): InnerDocumentModel
-    fun edit(document: InnerDocumentModel): InnerDocumentModel
-    fun get(id: Int): InnerDocumentModel
-    fun delete(document: InnerDocumentModel)
+    fun add(document: DocumentDTO): DocumentDTO
+    fun edit(document: DocumentDTO): DocumentDTO
+    fun get(id: Int): DocumentDTO
     fun deleteById(documentId: Int)
-    fun getAllByInformatizationObjectId(iOId: Int?): Set<InnerDocumentModel>
-    fun getAll(): Set<InnerDocumentModel>
+    fun getAllByInformatizationObjectId(iOId: Int?): Set<DocumentDTO>
+    fun getAll(): Set<DocumentDTO>
 }

@@ -1,6 +1,6 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.ComponentModel
+import com.military.backend.domain.dto.ComponentDTO
 import com.military.backend.service.ComponentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -13,26 +13,26 @@ class ComponentAPIController {
 
     @GetMapping("api/components/")
     fun getComponents(@RequestParam("inform_obj_id") informObjectId: Int?):
-            Set<ComponentModel> {
+            Set<ComponentDTO> {
         return componentService!!.getAllByInformatizationObjectId(informObjectId)
     }
 
     @GetMapping("api/component/{id}")
-    fun getComponent(@PathVariable componentId: Int): ComponentModel {
+    fun getComponent(@PathVariable componentId: Int): ComponentDTO {
         return componentService!!.get(componentId)
     }
 
     @PostMapping("api/component/create", consumes = ["application/json"],
         produces = ["application/json"])
-    fun createComponent(@RequestBody component: ComponentModel):
-            ComponentModel {
+    fun createComponent(@RequestBody component: ComponentDTO):
+            ComponentDTO {
         return componentService!!.add(component)
     }
 
     @PostMapping("api/component/update", consumes = ["application/json"],
         produces = ["application/json"])
-    fun updateComponent(@RequestBody component: ComponentModel):
-            ComponentModel {
+    fun updateComponent(@RequestBody component: ComponentDTO):
+            ComponentDTO {
         return componentService!!.edit(component)
     }
 
@@ -40,12 +40,5 @@ class ComponentAPIController {
     fun deleteComponentById(@RequestParam componentId: Int)
     {
         componentService!!.deleteById(componentId)
-    }
-
-    @PostMapping("api/component/delete", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun deleteComponent(@RequestBody component: ComponentModel)
-    {
-        componentService!!.delete(component)
     }
 }
