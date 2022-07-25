@@ -18,8 +18,8 @@ class SpecialCheckResultAPIController {
     }
     
     @GetMapping("api/spec-check/{id}")
-    fun getSpecialCheckResult(@PathVariable specCheckId: Int): SpecialCheckResultModel {
-        return specialCheckResultService!!.get(specCheckId)
+    fun getSpecialCheckResult(@PathVariable id: Int): SpecialCheckResultModel {
+        return specialCheckResultService!!.get(id)
     }
 
     @PostMapping("api/spec-check/create", consumes = ["application/json"],
@@ -40,12 +40,5 @@ class SpecialCheckResultAPIController {
     fun deleteSpecialCheckResultById(@RequestParam specCheckId: Int)
     {
         specialCheckResultService!!.deleteById(specCheckId)
-    }
-
-    @PostMapping("api/spec-check/delete", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun deleteSpecialCheckResult(@RequestBody specCheck: SpecialCheckResultModel)
-    {
-        specialCheckResultService!!.delete(specCheck)
     }
 }

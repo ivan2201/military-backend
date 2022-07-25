@@ -32,11 +32,6 @@ class CertificateServiceImpl: CertificateService {
         return certificateRepository!!.getOne(id)
     }
 
-    override fun delete(certificate: CertificateModel)
-    {
-        certificateRepository!!.delete(certificate)
-    }
-
     override fun deleteById(certificateId: Int) {
         certificateRepository!!.deleteById(certificateId)
     }

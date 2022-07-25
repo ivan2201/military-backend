@@ -32,11 +32,6 @@ class SpecialInvestigationServiceImpl: SpecialInvestigationService {
         return specialInvestigationRepository!!.getOne(id)
     }
 
-    override fun delete(specInvestigation: SpecialInvestigationModel)
-    {
-        specialInvestigationRepository!!.delete(specInvestigation)
-    }
-
     override fun deleteById(specInvestigationId: Int) {
         specialInvestigationRepository!!.deleteById(specInvestigationId)
     }

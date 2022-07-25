@@ -32,11 +32,6 @@ class SpecialCheckResultServiceImpl: SpecialCheckResultService {
         return specialCheckResultRepository!!.getOne(id)
     }
 
-    override fun delete(specCheckResult: SpecialCheckResultModel)
-    {
-        specialCheckResultRepository!!.delete(specCheckResult)
-    }
-
     override fun deleteById(specCheckResultId: Int) {
         specialCheckResultRepository!!.deleteById(specCheckResultId)
     }

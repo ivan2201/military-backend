@@ -18,8 +18,8 @@ class SpecialInvestigationAPIController {
     }
 
     @GetMapping("api/spec-investigation/{id}")
-    fun getSpecialInvestigation(@PathVariable specInvestigationId: Int): SpecialInvestigationModel {
-        return specialInvestigationService!!.get(specInvestigationId)
+    fun getSpecialInvestigation(@PathVariable id: Int): SpecialInvestigationModel {
+        return specialInvestigationService!!.get(id)
     }
 
     @PostMapping("api/spec-investigation/create", consumes = ["application/json"],
@@ -40,12 +40,5 @@ class SpecialInvestigationAPIController {
     fun deleteSpecialInvestigationById(@RequestParam specInvestigationId: Int)
     {
         specialInvestigationService!!.deleteById(specInvestigationId)
-    }
-
-    @PostMapping("api/spec-investigation/delete", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun deleteSpecialInvestigation(@RequestBody specInvestigation: SpecialInvestigationModel)
-    {
-        specialInvestigationService!!.delete(specInvestigation)
     }
 }

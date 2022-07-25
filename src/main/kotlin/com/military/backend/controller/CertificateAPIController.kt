@@ -18,8 +18,8 @@ class CertificateAPIController {
     }
 
     @GetMapping("api/certificate/{id}")
-    fun getCertificate(@PathVariable certificateId: Int): CertificateModel {
-        return certificateService!!.get(certificateId)
+    fun getCertificate(@PathVariable id: Int): CertificateModel {
+        return certificateService!!.get(id)
     }
 
     @PostMapping("api/certificate/create", consumes = ["application/json"],
@@ -40,12 +40,5 @@ class CertificateAPIController {
     fun deleteCertificateById(@RequestParam certificateId: Int)
     {
         certificateService!!.deleteById(certificateId)
-    }
-
-    @PostMapping("api/certificate/delete", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun deleteCertificate(@RequestBody certificate: CertificateModel)
-    {
-        certificateService!!.delete(certificate)
     }
 }
