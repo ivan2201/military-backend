@@ -1,7 +1,6 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.dto.MilitaryBaseExcelDTO
-import com.military.backend.domain.dto.ObjectInformExcelDTO
+import com.military.backend.domain.dto.IdDTO
 import com.military.backend.service.ExcelService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -13,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/excel")
-class ExcelController {
+@RequestMapping("/download")
+class ExcelController: RestApiController {
 
     @Autowired
     private val excelService: ExcelService? = null
 
-    @PostMapping("/download/full")
+    @PostMapping("/full")
     fun downloadFullExcel(): ResponseEntity<ByteArray> {
         val (name, resource) = excelService!!.generateFullExcel()
 
@@ -32,9 +31,9 @@ class ExcelController {
             .body(resource)
     }
 
-    @PostMapping("/download/base")
-    fun downloadMilitaryBaseExcel(@RequestBody militaryBaseExcelDTO: MilitaryBaseExcelDTO): ResponseEntity<ByteArray> {
-        val (name, resource) = excelService!!.generateMilitaryBaseExcel(militaryBaseExcelDTO)
+    @PostMapping("/base")
+    fun downloadMilitaryBaseExcel(@RequestBody idDTO: IdDTO): ResponseEntity<ByteArray> {
+        val (name, resource) = excelService!!.generateMilitaryBaseExcel(idDTO)
 
         return ResponseEntity
             .ok()
@@ -45,9 +44,9 @@ class ExcelController {
             .body(resource)
     }
 
-    @PostMapping("/download/obj")
-    fun downloadObjInformExcel(@RequestBody objectInformExcelDTO: ObjectInformExcelDTO): ResponseEntity<ByteArray> {
-        val (name, resource) = excelService!!.generateObjInformExcel(objectInformExcelDTO)
+    @PostMapping("/obj")
+    fun downloadObjInformExcel(@RequestBody idDTO: IdDTO): ResponseEntity<ByteArray> {
+        val (name, resource) = excelService!!.generateObjInformExcel(idDTO)
 
         return ResponseEntity
             .ok()

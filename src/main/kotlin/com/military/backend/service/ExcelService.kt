@@ -1,6 +1,7 @@
 package com.military.backend.service
 
 import com.military.backend.component.ExcelHandler
+import com.military.backend.domain.dto.IdDTO
 import com.military.backend.domain.dto.MilitaryBaseExcelDTO
 import com.military.backend.domain.dto.ObjectInformExcelDTO
 import com.military.backend.exceptions.ExcelDTOException
@@ -39,12 +40,10 @@ class ExcelService {
 
     /**
      * Creates excel [File] with info about all informatization objects for
-     * military base by [MilitaryBaseExcelDTO.militaryBaseId].
+     * military base by [IdDTO.id].
      */
-    fun generateMilitaryBaseExcel(militaryBaseExcelDTO: MilitaryBaseExcelDTO): Pair<String, ByteArray> {
-        val informObjects = militaryBaseExcelDTO.militaryBaseId?.let {
-            objectInformatizationRepository!!.findAllByMilitaryBaseId(militaryBaseExcelDTO.militaryBaseId)
-        } ?: throw ExcelDTOException("militaryBaseId is null")
+    fun generateMilitaryBaseExcel(idDTO: IdDTO): Pair<String, ByteArray> {
+        val informObjects = objectInformatizationRepository!!.findAllByMilitaryBaseId(idDTO.id.toInt())
         val excelFile = excelHandler!!.generateExcel(
             informObjects = informObjects,
             addMilitaryBaseSection = false,
@@ -56,12 +55,10 @@ class ExcelService {
 
     /**
      * Creates excel [File] with info about informatization object
-     * by [ObjectInformExcelDTO.informObjectId].
+     * by [IdDTO.id].
      */
-    fun generateObjInformExcel(objectInformExcelDTO: ObjectInformExcelDTO): Pair<String, ByteArray> {
-        val informObject = objectInformExcelDTO.informObjectId?.let {
-            objectInformatizationRepository!!.findById(it).get()
-        } ?: throw ExcelDTOException("informObjectId is null")
+    fun generateObjInformExcel(idDTO: IdDTO): Pair<String, ByteArray> {
+        val informObject = objectInformatizationRepository!!.findById(idDTO.id.toInt()).get()
         val excelFile = excelHandler!!.generateExcel(
             informObjects = setOf(informObject),
             addMilitaryBaseSection = false,
