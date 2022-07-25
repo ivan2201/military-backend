@@ -1,5 +1,8 @@
 package com.military.backend.controller
 
+import com.military.backend.domain.dto.EditObjectInformatizationDTO
+import com.military.backend.domain.dto.IdDTO
+import com.military.backend.domain.dto.NewObjectInformatizationDTO
 import com.military.backend.domain.dto.ObjectInformatizationDTO
 import com.military.backend.service.ObjectInformatizationService
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,34 +14,40 @@ class InformatizationObjectAPIController {
     @Autowired
     var objectInformatizationService: ObjectInformatizationService? = null
 
-    @GetMapping("api/informatization-objects/")
-    fun getInformatizationObjects(@RequestParam("mil_base_id") militaryBaseId: Int?):
+    @GetMapping("api/informatization-objects/by-mil-base")
+    fun getInformatizationObjectsByMilBaseID(@RequestBody militaryBaseId: IdDTO):
             Set<ObjectInformatizationDTO> {
-        return objectInformatizationService!!.getAllByMilitaryBaseId(militaryBaseId)
+        return objectInformatizationService!!.getAllByMilitaryBaseId(militaryBaseId.id.toInt())
     }
 
-    @GetMapping("api/informatization-object/{id}")
-    fun getObjectInformatization(@PathVariable objectInformatizationId: Int): ObjectInformatizationDTO {
-        return objectInformatizationService!!.get(objectInformatizationId)
+    @GetMapping("api/informatization-objects")
+    fun getInformatizationObjects():
+            Set<ObjectInformatizationDTO> {
+        return objectInformatizationService!!.getAll()
+    }
+
+    @GetMapping("api/informatization-object")
+    fun getObjectInformatization(@RequestBody objectInformatizationId: IdDTO): ObjectInformatizationDTO {
+        return objectInformatizationService!!.get(objectInformatizationId.id.toInt())
     }
 
     @PostMapping("api/informatization-object/create", consumes = ["application/json"],
         produces = ["application/json"])
-    fun createObjectInformatization(@RequestBody objectInformatization: ObjectInformatizationDTO):
+    fun createObjectInformatization(@RequestBody objectInformatization: NewObjectInformatizationDTO):
             ObjectInformatizationDTO {
         return objectInformatizationService!!.add(objectInformatization)
     }
 
     @PostMapping("api/informatization-object/update", consumes = ["application/json"],
         produces = ["application/json"])
-    fun updateObjectInformatization(@RequestBody objectInformatization: ObjectInformatizationDTO):
+    fun updateObjectInformatization(@RequestBody objectInformatization: EditObjectInformatizationDTO):
             ObjectInformatizationDTO {
         return objectInformatizationService!!.edit(objectInformatization)
     }
 
-    @PostMapping("api/informatization-object/{id}/delete")
-    fun deleteObjectInformatizationById(@RequestParam objectInformatizationId: Int)
+    @PostMapping("api/informatization-object/delete")
+    fun deleteObjectInformatizationById(@RequestBody objectInformatizationId: IdDTO)
     {
-        objectInformatizationService!!.deleteById(objectInformatizationId)
+        objectInformatizationService!!.deleteById(objectInformatizationId.id.toInt())
     }
 }

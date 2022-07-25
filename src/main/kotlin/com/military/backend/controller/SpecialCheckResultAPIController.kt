@@ -1,6 +1,7 @@
 package com.military.backend.controller
 
 import com.military.backend.domain.SpecialCheckResultModel
+import com.military.backend.domain.dto.IdDTO
 import com.military.backend.service.SpecialCheckResultService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -11,15 +12,15 @@ class SpecialCheckResultAPIController {
     @Autowired
     var specialCheckResultService: SpecialCheckResultService? = null
 
-    @GetMapping("api/spec-checks/")
+    @GetMapping("api/spec-checks")
     fun getSpecialCheckResults():
             Set<SpecialCheckResultModel> {
         return specialCheckResultService!!.getAll()
     }
-    
-    @GetMapping("api/spec-check/{id}")
-    fun getSpecialCheckResult(@PathVariable id: Int): SpecialCheckResultModel {
-        return specialCheckResultService!!.get(id)
+
+    @GetMapping("api/spec-check")
+    fun getSpecialCheckResult(@RequestBody specCheckId: IdDTO): SpecialCheckResultModel {
+        return specialCheckResultService!!.get(specCheckId.id.toInt())
     }
 
     @PostMapping("api/spec-check/create", consumes = ["application/json"],
@@ -36,7 +37,7 @@ class SpecialCheckResultAPIController {
         return specialCheckResultService!!.edit(specCheck)
     }
 
-    @PostMapping("api/spec-check/{id}/delete")
+    @PostMapping("api/spec-check/delete")
     fun deleteSpecialCheckResultById(@RequestParam specCheckId: Int)
     {
         specialCheckResultService!!.deleteById(specCheckId)

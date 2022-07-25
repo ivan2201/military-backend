@@ -1,6 +1,7 @@
 package com.military.backend.service.impl
 
 import com.military.backend.domain.MilitaryBaseModel
+import com.military.backend.domain.dto.NewWarCampDTO
 import com.military.backend.domain.dto.WarCampDTO
 import com.military.backend.repository.MilitaryBaseRepository
 import com.military.backend.service.MilitaryBaseService
@@ -12,12 +13,9 @@ class MilitaryBaseServiceImpl: MilitaryBaseService {
     @Autowired
     var militaryBaseRepository: MilitaryBaseRepository? = null
 
-    override fun add(militaryBase: WarCampDTO): WarCampDTO
+    override fun add(militaryBase: NewWarCampDTO): WarCampDTO
     {
-        if (militaryBase.id == -1)
-            return WarCampDTO(militaryBaseRepository!!.save(MilitaryBaseModel(militaryBase)))
-        else
-            throw Exception("Bad value")
+        return WarCampDTO(militaryBaseRepository!!.save(MilitaryBaseModel(militaryBase)))
     }
 
     override fun edit(militaryBase: WarCampDTO): WarCampDTO

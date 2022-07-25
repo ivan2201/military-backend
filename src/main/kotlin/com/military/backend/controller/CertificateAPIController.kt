@@ -1,6 +1,7 @@
 package com.military.backend.controller
 
 import com.military.backend.domain.CertificateModel
+import com.military.backend.domain.dto.IdDTO
 import com.military.backend.service.CertificateService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -36,9 +37,9 @@ class CertificateAPIController {
         return certificateService!!.edit(certificate)
     }
 
-    @PostMapping("api/certificate/{id}/delete")
-    fun deleteCertificateById(@RequestParam certificateId: Int)
+    @PostMapping("api/certificate/delete")
+    fun deleteCertificateById(@RequestBody certificateId: IdDTO)
     {
-        certificateService!!.deleteById(certificateId)
+        certificateService!!.deleteById(certificateId.id.toInt())
     }
 }

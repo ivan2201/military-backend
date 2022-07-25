@@ -1,5 +1,7 @@
 package com.military.backend.controller
 
+import com.military.backend.domain.dto.IdDTO
+import com.military.backend.domain.dto.NewWarCampDTO
 import com.military.backend.domain.dto.WarCampDTO
 import com.military.backend.service.MilitaryBaseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,19 +18,19 @@ class MilitaryBaseAPIController {
     @Autowired
     var militaryBaseService: MilitaryBaseService? = null
 
-    @GetMapping("api/military-bases/")
+    @GetMapping("api/military-bases")
     fun getMilitaryBases(): Set<WarCampDTO> {
         return militaryBaseService!!.getAll()
     }
 
-    @GetMapping("api/military-base/{id}")
-    fun getMilitaryBase(@PathVariable militaryBaseId: Int): WarCampDTO {
-        return militaryBaseService!!.get(militaryBaseId)
+    @GetMapping("api/military-base")
+    fun getMilitaryBase(@RequestBody militaryBaseId: IdDTO): WarCampDTO {
+        return militaryBaseService!!.get(militaryBaseId.id.toInt())
     }
 
     @PostMapping("api/military-base/create", consumes = ["application/json"],
         produces = ["application/json"])
-    fun createMilitaryBase(@RequestBody militaryBaseModel: WarCampDTO): WarCampDTO {
+    fun createMilitaryBase(@RequestBody militaryBaseModel: NewWarCampDTO): WarCampDTO {
         return militaryBaseService!!.add(militaryBaseModel)
     }
 
@@ -38,9 +40,9 @@ class MilitaryBaseAPIController {
         return militaryBaseService!!.edit(militaryBaseModel)
     }
 
-    @PostMapping("api/military-base/{id}/delete")
-    fun deleteMilitaryBaseById(@RequestParam militaryBaseId: Int)
+    @PostMapping("api/military-base/delete")
+    fun deleteMilitaryBaseById(@RequestBody militaryBaseId: IdDTO)
     {
-        militaryBaseService!!.deleteById(militaryBaseId)
+        militaryBaseService!!.deleteById(militaryBaseId.id.toInt())
     }
 }

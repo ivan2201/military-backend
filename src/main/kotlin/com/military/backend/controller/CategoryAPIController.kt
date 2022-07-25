@@ -12,7 +12,7 @@ class CategoryAPIController {
     @Autowired
     var categoryService: CategoryService? = null
 
-    @GetMapping("api/categories/")
+    @GetMapping("api/categories")
     fun getCategories():
             Set<CategoryModel> {
         return categoryService!!.getAll()

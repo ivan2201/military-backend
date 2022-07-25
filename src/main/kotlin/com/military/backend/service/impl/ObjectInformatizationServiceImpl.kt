@@ -1,8 +1,10 @@
 package com.military.backend.service.impl
 
 import com.military.backend.domain.ObjectInformatizationModel
+import com.military.backend.domain.dto.EditObjectInformatizationDTO
+import com.military.backend.domain.dto.NewObjectInformatizationDTO
 import com.military.backend.domain.dto.ObjectInformatizationDTO
-import com.military.backend.repository.ObjectInformatizationRepository
+import com.military.backend.repository.*
 import com.military.backend.service.ObjectInformatizationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -10,24 +12,36 @@ import org.springframework.stereotype.Service
 @Service
 class ObjectInformatizationServiceImpl: ObjectInformatizationService {
     @Autowired
-    var objectInformatizationRepository: ObjectInformatizationRepository? = null
+    val objectInformatizationRepository: ObjectInformatizationRepository? = null
 
-    override fun add(informatizationObject: ObjectInformatizationDTO): ObjectInformatizationDTO
+    @Autowired
+    val militaryBaseRepository: MilitaryBaseRepository? = null
+
+    @Autowired
+    val certificateRepository: CertificateRepository? = null
+
+    @Autowired
+    val specialCheckResultRepository: SpecialCheckResultRepository? = null
+
+    @Autowired
+    val specialInvestigationRepository: SpecialInvestigationRepository? = null
+
+    override fun add(informatizationObject: NewObjectInformatizationDTO): ObjectInformatizationDTO
     {
-        if (informatizationObject.id == -1)
-            return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
-                ObjectInformatizationModel(informatizationObject)))
-        else
-            throw Exception("Bad value")
+        return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
+                ObjectInformatizationModel(informatizationObject,
+                    informatizationObject.mbId?.let { militaryBaseRepository!!.getOne(it) })))
     }
 
-    override fun edit(informatizationObject: ObjectInformatizationDTO): ObjectInformatizationDTO
+    override fun edit(informatizationObject: EditObjectInformatizationDTO): ObjectInformatizationDTO
     {
-        if (informatizationObject.id > 0)
-            return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
-                ObjectInformatizationModel(informatizationObject)))
-        else
-            throw Exception("Bad value")
+        return ObjectInformatizationDTO(objectInformatizationRepository!!.save(
+            ObjectInformatizationModel(informatizationObject,
+                informatizationObject.mbId?.let { militaryBaseRepository!!.getOne(it) },
+                informatizationObject.certId?.let { certificateRepository!!.getOne(it) },
+                informatizationObject.siId?.let { specialInvestigationRepository!!.getOne(it) },
+                informatizationObject.scrId?.let { specialCheckResultRepository!!.getOne(it) }
+                )))
     }
 
     override fun get(id: Int): ObjectInformatizationDTO
@@ -40,13 +54,10 @@ class ObjectInformatizationServiceImpl: ObjectInformatizationService {
         objectInformatizationRepository!!.deleteById(informatizationObjectId)
     }
 
-    override fun getAllByMilitaryBaseId(militaryBaseId: Int?): Set<ObjectInformatizationDTO> {
-        militaryBaseId?.let {
-            return ObjectInformatizationDTO.fromObjectInformatizationModelSet(
+    override fun getAllByMilitaryBaseId(militaryBaseId: Int): Set<ObjectInformatizationDTO> {
+        return ObjectInformatizationDTO.fromObjectInformatizationModelSet(
                     objectInformatizationRepository!!.findAllByMilitaryBaseId(militaryBaseId)
-            )
-        }
-        return getAll()
+        )
     }
 
     override fun getAll(): Set<ObjectInformatizationDTO> {

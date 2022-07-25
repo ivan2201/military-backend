@@ -2,7 +2,10 @@ package com.military.backend.service.impl
 
 import com.military.backend.domain.ComponentModel
 import com.military.backend.domain.dto.ComponentDTO
+import com.military.backend.domain.dto.EditComponentDTO
+import com.military.backend.domain.dto.NewComponentDTO
 import com.military.backend.repository.ComponentRepository
+import com.military.backend.repository.ObjectInformatizationRepository
 import com.military.backend.service.ComponentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -12,20 +15,19 @@ class ComponentServiceImpl: ComponentService {
     @Autowired
     var componentRepository: ComponentRepository? = null
 
-    override fun add(component: ComponentDTO): ComponentDTO
+    @Autowired
+    val objectInformatizationRepository: ObjectInformatizationRepository? = null
+
+    override fun add(component: NewComponentDTO): ComponentDTO
     {
-        if (component.id == -1)
-            return ComponentDTO(componentRepository!!.save(ComponentModel(component)))
-        else
-            throw Exception("Bad value")
+        return ComponentDTO(componentRepository!!.save(ComponentModel(component,
+            component.oiId?.let { objectInformatizationRepository!!.getOne(it) })))
     }
 
-    override fun edit(component: ComponentDTO): ComponentDTO
+    override fun edit(component: EditComponentDTO): ComponentDTO
     {
-        if (component.id > 0)
-            return ComponentDTO(componentRepository!!.save(ComponentModel(component)))
-        else
-            throw Exception("Bad value")
+        return ComponentDTO(componentRepository!!.save(ComponentModel(component,
+            component.oiId?.let { objectInformatizationRepository!!.getOne(it) })))
     }
 
     override fun get(id: Int): ComponentDTO
