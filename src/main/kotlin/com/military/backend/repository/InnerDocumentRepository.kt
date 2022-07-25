@@ -7,3 +7,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface InnerDocumentRepository : JpaRepository<InnerDocumentModel, Int>
+{
+
+    fun findAllByObjectInformatizationId(objectInformatizationId: Int):
+            Set<InnerDocumentModel>
+}

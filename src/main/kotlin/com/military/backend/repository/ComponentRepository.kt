@@ -6,3 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ComponentRepository : JpaRepository<ComponentModel, Int>
+{
+    fun findAllByObjectInformatizationId(objectInformatizationId: Int):
+            Set<ComponentModel>
+}
