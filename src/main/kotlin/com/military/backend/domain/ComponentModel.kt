@@ -2,6 +2,7 @@ package com.military.backend.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.military.backend.domain.dto.ComponentDTO
+import com.military.backend.domain.dto.EditComponentDTO
 import com.military.backend.domain.dto.NewComponentDTO
 import org.hibernate.Hibernate
 import org.hibernate.annotations.CreationTimestamp
@@ -35,6 +36,10 @@ data class ComponentModel(
 ) {
     constructor(componentDTO: NewComponentDTO, informatizationModel: ObjectInformatizationModel?): this(
         name = componentDTO.name, seriesNumber = componentDTO.series,
+        objectInformatization = informatizationModel)
+
+    constructor(componentDTO: EditComponentDTO, informatizationModel: ObjectInformatizationModel?): this(
+        id=componentDTO.id,name = componentDTO.name, seriesNumber = componentDTO.series,
         objectInformatization = informatizationModel)
 
     override fun equals(other: Any?): Boolean {

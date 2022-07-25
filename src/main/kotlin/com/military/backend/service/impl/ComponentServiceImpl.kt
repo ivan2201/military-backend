@@ -26,10 +26,8 @@ class ComponentServiceImpl: ComponentService {
 
     override fun edit(component: EditComponentDTO): ComponentDTO
     {
-        if (component.id > 0)
-            return ComponentDTO(componentRepository!!.save(ComponentModel(component)))
-        else
-            throw Exception("Bad value")
+        return ComponentDTO(componentRepository!!.save(ComponentModel(component,
+            component.oiId?.let { objectInformatizationRepository!!.getOne(it) })))
     }
 
     override fun get(id: Int): ComponentDTO
