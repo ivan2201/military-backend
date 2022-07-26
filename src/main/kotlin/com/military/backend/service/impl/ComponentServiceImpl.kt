@@ -21,7 +21,7 @@ class ComponentServiceImpl: ComponentService {
     override fun add(component: NewComponentDTO): ComponentDTO
     {
         return ComponentDTO(componentRepository!!.save(ComponentModel(component,
-            component.oiId?.let { objectInformatizationRepository!!.getOne(it) })))
+            component.id?.let { objectInformatizationRepository!!.getOne(it) })))
     }
 
     override fun edit(component: EditComponentDTO): ComponentDTO

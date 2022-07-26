@@ -22,7 +22,7 @@ class InnerDocumentServiceImpl: InnerDocumentService {
     {
         return DocumentDTO(innerDocumentRepository!!.save(
             InnerDocumentModel(document,
-                document.oiId?.let { objectInformatizationRepository!!.getOne(it) }
+                document.id?.let { objectInformatizationRepository!!.getOne(it) }
         )))
     }
 

@@ -1,35 +1,54 @@
 package com.military.backend.service.impl
 
+import com.military.backend.domain.CategoryModel
 import com.military.backend.domain.CertificateModel
+import com.military.backend.domain.dto.CertificateDTO
+import com.military.backend.domain.dto.IdDTO
+import com.military.backend.repository.CategoryRepository
 import com.military.backend.repository.CertificateRepository
 import com.military.backend.service.CertificateService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.sql.Date
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Service
-class CertificateServiceImpl: CertificateService {
+class CertificateServiceImpl : CertificateService {
+
     @Autowired
-    var certificateRepository: CertificateRepository? = null
+    private val certificateRepository: CertificateRepository? = null
 
-    override fun add(certificate: CertificateModel): CertificateModel
-    {
-        if (certificate.id == null || certificate.id == -1)
-            return certificateRepository!!.save(certificate)
-        else
-            throw Exception("Bad value")
+    @Autowired
+    private val categoryRepository: CategoryRepository? = null
+
+    override fun addOrEdit(certificateDTO: CertificateDTO) {
+        val certOptional = certificateRepository!!.findById(certificateDTO.id)
+        val categoryOptional = categoryRepository!!.findByCategoryName(certificateDTO.category ?: "")
+        val certModel = if (certOptional.isEmpty) {
+            CertificateModel(
+                category = if (categoryOptional.isEmpty) null else categoryOptional.get(),
+                certNumber = certificateDTO.numberCert,
+                approveDate = Date.valueOf(certificateDTO.dateCreateCert),
+                recertDate = Date.valueOf(certificateDTO.dateFinishCert),
+                certCreator = certificateDTO.owner,
+            )
+        } else {
+            val oldCert = certOptional.get()
+            CertificateModel(
+                id = oldCert.id,
+                category = if (categoryOptional.isEmpty) null else oldCert.category,
+                certNumber = certificateDTO.numberCert ?: oldCert.certNumber,
+                approveDate = Date.valueOf(certificateDTO.dateCreateCert) ?: oldCert.approveDate,
+                recertDate = Date.valueOf(certificateDTO.dateFinishCert) ?: oldCert.recertDate,
+                certCreator = certificateDTO.owner ?: oldCert.certCreator,
+            )
+        }
+        certificateRepository.save(certModel)
     }
 
-    override fun edit(certificate: CertificateModel): CertificateModel
-    {
-        if (certificate.id != null && certificate.id > 0)
-            return certificateRepository!!.save(certificate)
-        else
-            throw Exception("Bad value")
-    }
-
-    override fun get(id: Int): CertificateModel
-    {
-        return certificateRepository!!.getOne(id)
+    override fun get(idDTO: IdDTO): CertificateModel {
+        return certificateRepository!!.getOne(idDTO.id.toInt())
     }
 
     override fun deleteById(certificateId: Int) {

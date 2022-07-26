@@ -35,7 +35,7 @@ data class ComponentModel(
 
 ) {
     constructor(componentDTO: NewComponentDTO, informatizationModel: ObjectInformatizationModel?): this(
-        name = componentDTO.name, seriesNumber = componentDTO.series,
+        name = componentDTO.nameDocument, seriesNumber = componentDTO.series,
         objectInformatization = informatizationModel)
 
     constructor(componentDTO: EditComponentDTO, informatizationModel: ObjectInformatizationModel?): this(

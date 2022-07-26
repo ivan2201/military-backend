@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/download")
-class ExcelController: RestApiController {
+@RequestMapping("/api/download")
+class ExcelController {
 
     @Autowired
     private val excelService: ExcelService? = null
@@ -31,7 +31,7 @@ class ExcelController: RestApiController {
             .body(resource)
     }
 
-    @PostMapping("/base")
+    @PostMapping("/war-camp", consumes = ["application/json"])
     fun downloadMilitaryBaseExcel(@RequestBody idDTO: IdDTO): ResponseEntity<ByteArray> {
         val (name, resource) = excelService!!.generateMilitaryBaseExcel(idDTO)
 
@@ -44,7 +44,7 @@ class ExcelController: RestApiController {
             .body(resource)
     }
 
-    @PostMapping("/obj")
+    @PostMapping("/object-informatization", consumes = ["application/json"])
     fun downloadObjInformExcel(@RequestBody idDTO: IdDTO): ResponseEntity<ByteArray> {
         val (name, resource) = excelService!!.generateObjInformExcel(idDTO)
 

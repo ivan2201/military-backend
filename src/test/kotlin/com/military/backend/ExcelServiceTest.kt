@@ -1,6 +1,7 @@
 package com.military.backend
 
 import com.military.backend.component.ExcelHandler
+import com.military.backend.domain.dto.IdDTO
 import com.military.backend.domain.dto.MilitaryBaseExcelDTO
 import com.military.backend.domain.dto.ObjectInformExcelDTO
 import com.military.backend.repository.MilitaryBaseRepository
@@ -32,13 +33,13 @@ class ExcelServiceTest {
     fun `Export military base info test`() {
         requireNotNull(excelService)
         val militaryBase = militaryBaseRepository!!.findAll().random()
-        excelService.generateMilitaryBaseExcel(MilitaryBaseExcelDTO(militaryBase.id))
+        excelService.generateMilitaryBaseExcel(IdDTO(militaryBase.id.toString()))
     }
 
     @Test
     fun `Export object inform info test`() {
         requireNotNull(excelService)
         val objectInformatization = objectInformatizationRepository!!.findAll().random()
-        excelService.generateObjInformExcel(ObjectInformExcelDTO(objectInformatization.id))
+        excelService.generateObjInformExcel(IdDTO(objectInformatization.id.toString()))
     }
 }

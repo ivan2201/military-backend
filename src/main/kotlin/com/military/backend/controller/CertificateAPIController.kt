@@ -1,45 +1,29 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.CertificateModel
+import com.military.backend.domain.dto.CertificateDTO
 import com.military.backend.domain.dto.IdDTO
 import com.military.backend.service.CertificateService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("/api/certificate")
 class CertificateAPIController {
 
     @Autowired
     var certificateService: CertificateService? = null
 
-    @GetMapping("api/certificates/")
-    fun getCertificates():
-            Set<CertificateModel> {
-        return certificateService!!.getAll()
+    @PostMapping("/create", consumes = ["application/json"])
+    fun createCertificate(@RequestBody certificate: CertificateDTO): ResponseEntity<HttpStatus> {
+        certificateService!!.addOrEdit(certificate)
+        return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("api/certificate/{id}")
-    fun getCertificate(@PathVariable id: Int): CertificateModel {
-        return certificateService!!.get(id)
-    }
-
-    @PostMapping("api/certificate/create", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun createCertificate(@RequestBody certificate: CertificateModel):
-            CertificateModel {
-        return certificateService!!.add(certificate)
-    }
-
-    @PostMapping("api/certificate/update", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun updateCertificate(@RequestBody certificate: CertificateModel):
-            CertificateModel {
-        return certificateService!!.edit(certificate)
-    }
-
-    @PostMapping("api/certificate/delete")
-    fun deleteCertificateById(@RequestBody certificateId: IdDTO)
-    {
+    @PostMapping("/delete", consumes = ["application/json"])
+    fun deleteCertificateById(@RequestBody certificateId: IdDTO): ResponseEntity<HttpStatus> {
         certificateService!!.deleteById(certificateId.id.toInt())
+        return ResponseEntity(HttpStatus.OK)
     }
 }

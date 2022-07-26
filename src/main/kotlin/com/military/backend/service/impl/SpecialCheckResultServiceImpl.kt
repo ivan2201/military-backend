@@ -1,30 +1,36 @@
 package com.military.backend.service.impl
 
 import com.military.backend.domain.SpecialCheckResultModel
+import com.military.backend.domain.SpecialInvestigationModel
+import com.military.backend.domain.dto.SpecialCheckResultDTO
 import com.military.backend.repository.SpecialCheckResultRepository
 import com.military.backend.service.SpecialCheckResultService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.sql.Date
 
 @Service
 class SpecialCheckResultServiceImpl: SpecialCheckResultService {
+
     @Autowired
-    var specialCheckResultRepository: SpecialCheckResultRepository? = null
+    private val specialCheckResultRepository: SpecialCheckResultRepository? = null
 
-    override fun add(specCheckResult: SpecialCheckResultModel): SpecialCheckResultModel
-    {
-        if (specCheckResult.id == null || specCheckResult.id == -1)
-            return specialCheckResultRepository!!.save(specCheckResult)
-        else
-            throw Exception("Bad value")
-    }
-
-    override fun edit(specCheckResult: SpecialCheckResultModel): SpecialCheckResultModel
-    {
-        if (specCheckResult.id != null && specCheckResult.id > 0)
-            return specialCheckResultRepository!!.save(specCheckResult)
-        else
-            throw Exception("Bad value")
+    override fun addOrEdit(specCheckResult: SpecialCheckResultDTO) {
+        val scrOptional = specialCheckResultRepository!!.findById(specCheckResult.id)
+        val scrModel = if (scrOptional.isEmpty) {
+            SpecialCheckResultModel(
+                specialCheckResultNumber = specCheckResult.numberDoc,
+                approveDate = Date.valueOf(specCheckResult.dateCheck),
+            )
+        } else {
+            val oldScr = scrOptional.get()
+            SpecialCheckResultModel(
+                id = oldScr.id,
+                specialCheckResultNumber = specCheckResult.numberDoc ?: oldScr.specialCheckResultNumber,
+                approveDate = Date.valueOf(specCheckResult.dateCheck) ?: oldScr.approveDate,
+            )
+        }
+        specialCheckResultRepository.save(scrModel)
     }
 
     override fun get(id: Int): SpecialCheckResultModel

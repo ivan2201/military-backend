@@ -5,44 +5,40 @@ import com.military.backend.domain.dto.NewWarCampDTO
 import com.military.backend.domain.dto.WarCampDTO
 import com.military.backend.service.MilitaryBaseService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("/api/war-camp")
 class MilitaryBaseAPIController {
 
     @Autowired
     var militaryBaseService: MilitaryBaseService? = null
 
-    @GetMapping("api/military-bases")
-    fun getMilitaryBases(): Set<WarCampDTO> {
-        return militaryBaseService!!.getAll()
+    @GetMapping("/all")
+    fun getMilitaryBases(): ResponseEntity<Set<WarCampDTO>> {
+        return ResponseEntity(militaryBaseService!!.getAll(), HttpStatus.OK)
     }
 
-    @GetMapping("api/military-base")
-    fun getMilitaryBase(@RequestBody militaryBaseId: IdDTO): WarCampDTO {
-        return militaryBaseService!!.get(militaryBaseId.id.toInt())
+    @GetMapping("/by-id")
+    fun getMilitaryBase(@RequestBody militaryBaseId: IdDTO): ResponseEntity<WarCampDTO> {
+        return ResponseEntity(militaryBaseService!!.get(militaryBaseId.id.toInt()), HttpStatus.OK)
     }
 
-    @PostMapping("api/military-base/create", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun createMilitaryBase(@RequestBody militaryBaseModel: NewWarCampDTO): WarCampDTO {
-        return militaryBaseService!!.add(militaryBaseModel)
+    @PostMapping("/create", consumes = ["application/json"], produces = ["application/json"])
+    fun createMilitaryBase(@RequestBody militaryBaseModel: NewWarCampDTO): ResponseEntity<WarCampDTO> {
+        return ResponseEntity(militaryBaseService!!.add(militaryBaseModel), HttpStatus.CREATED)
     }
 
-    @PostMapping("api/military-base/update", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun updateMilitaryBase(@RequestBody militaryBaseModel: WarCampDTO): WarCampDTO {
-        return militaryBaseService!!.edit(militaryBaseModel)
+    @PostMapping("/update", consumes = ["application/json"], produces = ["application/json"])
+    fun updateMilitaryBase(@RequestBody militaryBaseModel: WarCampDTO): ResponseEntity<WarCampDTO> {
+        return ResponseEntity(militaryBaseService!!.edit(militaryBaseModel), HttpStatus.OK)
     }
 
-    @PostMapping("api/military-base/delete")
-    fun deleteMilitaryBaseById(@RequestBody militaryBaseId: IdDTO)
-    {
+    @PostMapping("/delete")
+    fun deleteMilitaryBaseById(@RequestBody militaryBaseId: IdDTO): ResponseEntity<HttpStatus> {
         militaryBaseService!!.deleteById(militaryBaseId.id.toInt())
+        return ResponseEntity(HttpStatus.OK)
     }
 }

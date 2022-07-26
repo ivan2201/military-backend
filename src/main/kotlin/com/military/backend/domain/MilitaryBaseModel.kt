@@ -33,10 +33,10 @@ data class MilitaryBaseModel(
 
 ) {
     constructor(warCampDTO: NewWarCampDTO):
-            this(name=warCampDTO.name, baseNumber = warCampDTO.number, location = warCampDTO.location)
+            this(name=warCampDTO.nameWarCamp, baseNumber = warCampDTO.numberWarCamp, location = warCampDTO.location)
 
     constructor(warCampDTO: WarCampDTO):
-            this(warCampDTO.id, warCampDTO.name, warCampDTO.number, warCampDTO.location)
+            this(warCampDTO.id, warCampDTO.nameWarCamp, warCampDTO.numberWarCamp, warCampDTO.location)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

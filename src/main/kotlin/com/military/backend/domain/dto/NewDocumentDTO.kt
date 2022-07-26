@@ -1,8 +1,8 @@
 package com.military.backend.domain.dto
 
 data class NewDocumentDTO(
-    val name: String?,
+    val id: Int?,
+    val nameDocument: String?,
     val regNum: String?,
-    val date: String?,
-    val oiId: Int?
+    val date: String?
 )

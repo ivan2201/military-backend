@@ -1,45 +1,29 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.SpecialCheckResultModel
 import com.military.backend.domain.dto.IdDTO
+import com.military.backend.domain.dto.SpecialCheckResultDTO
 import com.military.backend.service.SpecialCheckResultService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("/api/spec-check")
 class SpecialCheckResultAPIController {
 
     @Autowired
     var specialCheckResultService: SpecialCheckResultService? = null
 
-    @GetMapping("api/spec-checks")
-    fun getSpecialCheckResults():
-            Set<SpecialCheckResultModel> {
-        return specialCheckResultService!!.getAll()
+    @PostMapping("/create", consumes = ["application/json"])
+    fun createSpecialCheckResult(@RequestBody specCheck: SpecialCheckResultDTO): ResponseEntity<HttpStatus> {
+        specialCheckResultService!!.addOrEdit(specCheck)
+        return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("api/spec-check")
-    fun getSpecialCheckResult(@RequestBody specCheckId: IdDTO): SpecialCheckResultModel {
-        return specialCheckResultService!!.get(specCheckId.id.toInt())
-    }
-
-    @PostMapping("api/spec-check/create", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun createSpecialCheckResult(@RequestBody specCheck: SpecialCheckResultModel):
-            SpecialCheckResultModel {
-        return specialCheckResultService!!.add(specCheck)
-    }
-
-    @PostMapping("api/spec-check/update", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun updateSpecialCheckResult(@RequestBody specCheck: SpecialCheckResultModel):
-            SpecialCheckResultModel {
-        return specialCheckResultService!!.edit(specCheck)
-    }
-
-    @PostMapping("api/spec-check/delete")
-    fun deleteSpecialCheckResultById(@RequestParam specCheckId: Int)
-    {
-        specialCheckResultService!!.deleteById(specCheckId)
+    @PostMapping("/delete", consumes = ["application/json"])
+    fun deleteSpecialCheckResultById(@RequestBody specCheckId: IdDTO): ResponseEntity<HttpStatus> {
+        specialCheckResultService!!.deleteById(specCheckId.id.toInt())
+        return ResponseEntity(HttpStatus.OK)
     }
 }

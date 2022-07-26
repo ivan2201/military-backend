@@ -1,45 +1,33 @@
 package com.military.backend.controller
 
-import com.military.backend.domain.SpecialInvestigationModel
 import com.military.backend.domain.dto.IdDTO
+import com.military.backend.domain.dto.SpecialInvestigationDTO
 import com.military.backend.service.SpecialInvestigationService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("/api/spec-investigation")
 class SpecialInvestigationAPIController {
 
     @Autowired
     var specialInvestigationService: SpecialInvestigationService? = null
 
-    @GetMapping("api/spec-investigations")
-    fun getSpecialInvestigations():
-            Set<SpecialInvestigationModel> {
-        return specialInvestigationService!!.getAll()
+    @PostMapping("/create", consumes = ["application/json"])
+    fun createSpecialInvestigation(
+        @RequestBody specInvestigation: SpecialInvestigationDTO
+    ): ResponseEntity<HttpStatus> {
+        specialInvestigationService!!.addOrEdit(specInvestigation)
+        return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("api/spec-investigation")
-    fun getSpecialInvestigation(@RequestBody id: IdDTO): SpecialInvestigationModel {
-        return specialInvestigationService!!.get(id.id.toInt())
-    }
-
-    @PostMapping("api/spec-investigation/create", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun createSpecialInvestigation(@RequestBody specInvestigation: SpecialInvestigationModel):
-            SpecialInvestigationModel {
-        return specialInvestigationService!!.add(specInvestigation)
-    }
-
-    @PostMapping("api/spec-investigation/update", consumes = ["application/json"],
-        produces = ["application/json"])
-    fun updateSpecialInvestigation(@RequestBody specInvestigation: SpecialInvestigationModel):
-            SpecialInvestigationModel {
-        return specialInvestigationService!!.edit(specInvestigation)
-    }
-
-    @PostMapping("api/spec-investigation/delete")
-    fun deleteSpecialInvestigationById(@RequestBody specInvestigationId: IdDTO)
-    {
+    @PostMapping("/delete", consumes = ["application/json"])
+    fun deleteSpecialInvestigationById(
+        @RequestBody specInvestigationId: IdDTO
+    ): ResponseEntity<HttpStatus> {
         specialInvestigationService!!.deleteById(specInvestigationId.id.toInt())
+        return ResponseEntity(HttpStatus.OK)
     }
 }

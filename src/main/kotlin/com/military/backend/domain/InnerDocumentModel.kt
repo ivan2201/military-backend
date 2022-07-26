@@ -39,7 +39,7 @@ data class InnerDocumentModel(
 
 ) {
     constructor(documentDTO: NewDocumentDTO, objectInformatization: ObjectInformatizationModel?): this(
-        name = documentDTO.name, registrationNumber = documentDTO.regNum,
+        name = documentDTO.nameDocument, registrationNumber = documentDTO.regNum,
         approveDate = Date.valueOf(documentDTO.date), objectInformatization = objectInformatization)
     constructor(documentDTO: EditDocumentDTO, objectInformatization: ObjectInformatizationModel?): this(
         id= documentDTO.id, name = documentDTO.name, registrationNumber = documentDTO.regNum,

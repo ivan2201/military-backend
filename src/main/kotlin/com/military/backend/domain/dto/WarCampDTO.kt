@@ -4,8 +4,8 @@ import com.military.backend.domain.MilitaryBaseModel
 
 data class WarCampDTO(
     val id: Int,
-    val name: String?,
-    val number: String?,
+    val nameWarCamp: String?,
+    val numberWarCamp: String?,
     val location: String?
 ) {
     constructor(militaryBaseModel: MilitaryBaseModel):
